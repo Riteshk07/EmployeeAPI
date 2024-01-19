@@ -1,0 +1,17 @@
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.deps.json
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.runtimeconfig.json
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.dll
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.pdb
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Contract.dll
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Contract.pdb
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.AssemblyReference.cache
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.GeneratedMSBuildEditorConfig.editorconfig
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.AssemblyInfoInputs.cache
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.AssemblyInfo.cs
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.CoreCompileInputs.cache
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.CopyComplete
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.dll
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\refint\EmployeeAPI.Provider.dll
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.pdb
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.genruntimeconfig.cache
+D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\ref\EmployeeAPI.Provider.dll
