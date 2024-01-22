@@ -17,5 +17,7 @@ namespace EmployeeAPI.Contract.Interfaces
         public Task<ResponseWithObjectMessage<Employee>> ChangeEmail(string oldEmail, string email);
 
         public string GeneratingToken(Employee emp);
+
+        public Task<ResponseMsg> ChangePassword(LoginPasswordDto data, string email);
     }
 }

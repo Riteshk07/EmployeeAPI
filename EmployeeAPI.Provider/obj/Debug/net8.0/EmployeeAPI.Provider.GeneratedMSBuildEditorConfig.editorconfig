@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = EmployeeAPI.Provider
-build_property.ProjectDir = D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\
+build_property.ProjectDir = C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

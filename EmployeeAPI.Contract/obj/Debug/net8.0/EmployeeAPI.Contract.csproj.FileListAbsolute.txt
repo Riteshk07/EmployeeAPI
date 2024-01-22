@@ -9,3 +9,14 @@ D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Co
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Contract\obj\Debug\net8.0\refint\EmployeeAPI.Contract.dll
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.pdb
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Contract\obj\Debug\net8.0\ref\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\bin\Debug\net8.0\EmployeeAPI.Contract.deps.json
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\bin\Debug\net8.0\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\bin\Debug\net8.0\EmployeeAPI.Contract.pdb
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.AssemblyInfo.cs
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\refint\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\EmployeeAPI.Contract.pdb
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Contract\obj\Debug\net8.0\ref\EmployeeAPI.Contract.dll

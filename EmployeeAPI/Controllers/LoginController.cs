@@ -3,6 +3,7 @@ using EmployeeAPI.Contract.Dtos.LoginDtos;
 using EmployeeAPI.Contract.Interfaces;
 using EmployeeAPI.Contract.Models;
 using EmployeeAPI.Contract.ResponseMessage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,29 @@ namespace EmployeeAPI.Controllers
             {
                 return Unauthorized();
             }else if(resp.Status == "notfound")
+            {
+                return NotFound(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("ChangePassword")]
+        public async Task<ActionResult<ResponseMsg>> ChangePassword([FromBody] LoginPasswordDto data)
+        {
+            var e1 = HttpContext.User.Claims;
+            var e2= HttpContext.User.Claims.First(c => c.Type == "Email");
+            string email = HttpContext.User.Claims.First(c => c.Type == "Email").Value;
+            var resp = await loginService.ChangePassword(data, email);
+            if(resp.StatusCode == 200) { 
+                return Ok(resp);
+            }else if(resp.StatusCode == 401)
+            {
+                return Unauthorized(resp);
+            }else if(resp.StatusCode == 404)
             {
                 return NotFound(resp);
             }

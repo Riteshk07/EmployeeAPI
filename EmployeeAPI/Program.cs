@@ -85,6 +85,9 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ITodoService, TodoService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IPasswordHash, PasswordHash>();
+builder.Services.AddSingleton<IEncryptMessage, EncryptMessage>();
+builder.Services.AddScoped<ICommunityMessageService, CommunityMessageService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
