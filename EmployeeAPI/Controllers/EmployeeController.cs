@@ -78,6 +78,10 @@ namespace EmployeeAPI.Controllers
             {
                 return Ok(resp);
             }
+            else if (resp.StatusCode == 201)
+            {
+                return Ok(resp);
+            }
             else if (resp.StatusCode == 202)
             {
                 return Accepted(resp);

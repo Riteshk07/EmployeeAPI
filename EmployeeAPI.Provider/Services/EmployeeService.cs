@@ -24,14 +24,16 @@ namespace EmployeeAPI.Provider.Services
         private readonly ILoginService loginService;
         private readonly ILogger<EmployeeService> logger;
         private readonly IValidationService validService;
+        private readonly IPasswordHash passwordHash;
 
         #region Employee Service Constructors
-        public EmployeeService(EmployeeDBContext context, ILoginService loginService, ILogger<EmployeeService> logger, IValidationService validService)
+        public EmployeeService(EmployeeDBContext context, ILoginService loginService, ILogger<EmployeeService> logger, IValidationService validService, IPasswordHash passwordHash)
         {
             this.context = context;
             this.loginService = loginService;
             this.logger = logger;
             this.validService = validService;
+            this.passwordHash = passwordHash;
         }
         #endregion
 
@@ -200,7 +202,7 @@ namespace EmployeeAPI.Provider.Services
 
                     Login login = new Login
                     {
-                        Password = emp.Password,
+                        Password = passwordHash.HashPassword(emp.Password),
                         Email = emp.Email,
                         EmployeeID = savedEmp.Entity.Id
                     };

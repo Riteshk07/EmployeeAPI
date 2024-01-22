@@ -30,13 +30,15 @@ namespace EmployeeAPI.Provider.Services
         private readonly IConfiguration configuration;
         private readonly ILogger<LoginService> logger;
         private readonly IValidationService validService;
+        private readonly IPasswordHash passwordHash;
 
         #region Constructors
-        public LoginService(EmployeeDBContext context, IConfiguration configuration, ILogger<LoginService> logger, IValidationService validService) {
+        public LoginService(EmployeeDBContext context, IConfiguration configuration, ILogger<LoginService> logger, IValidationService validService, IPasswordHash passwordHash) {
             this.context = context;
             this.configuration = configuration;
             this.logger = logger;
             this.validService = validService;
+            this.passwordHash = passwordHash;
         }
         #endregion 
 
@@ -54,7 +56,7 @@ namespace EmployeeAPI.Provider.Services
                 new Claim("Role", emp.EmployeeType.ToString()),
                 new Claim("Id", emp.Id.ToString()),
                 new Claim("Name", emp.Name),
-                new Claim("email", emp.Email),
+                new Claim("Email", emp.Email),
                 new Claim("DeptId", emp.DepartmentID.ToString())
             };
             #endregion
@@ -99,9 +101,25 @@ namespace EmployeeAPI.Provider.Services
                 }
                 #endregion
 
-                var LogDetails = await context.Logins.FirstOrDefaultAsync(em => em.Email == loginDto.Email && em.Password == loginDto.Password);
+                var LogDetails = await context.Logins.FirstOrDefaultAsync(em => em.Email == loginDto.Email);
                 if (LogDetails != null)
                 {
+                    #region Verifying password
+                    if (!passwordHash.Verify(LogDetails.Password, loginDto.Password))
+                    {
+                        logger.LogWarning($"Incorrect User Password! - Login id: {LogDetails.Id}");
+                        LoginResponseMessage loginMessageDto = new LoginResponseMessage()
+                        {
+                            Status = "failed",
+                            Message = "Incorrect User Password!",
+                            StatusCode = 401,
+                            Data = null,
+                            Token = null
+                        };
+                        return loginMessageDto;
+                    }
+                    #endregion
+
                     logger.LogInformation($"Fetching Employee Information");
                     var employee =  await context.Employees.Include(e=>e.Department).FirstOrDefaultAsync(e => e.Id == LogDetails.EmployeeID);
                    
@@ -232,6 +250,52 @@ namespace EmployeeAPI.Provider.Services
                 loginMessageDto.Status = "servererr";
                 return loginMessageDto;
                 #endregion
+            }
+        }
+
+        #endregion
+
+        #region Change Password Method
+        public async Task<ResponseMsg> ChangePassword(LoginPasswordDto data, string email)
+        {
+            ResponseMsg message = new ResponseMsg();
+            try
+            {
+                var logins = await context.Logins.FirstOrDefaultAsync(l => l.Email == email);
+                if (logins != null)
+                {
+                    #region Changing Password
+                    logins.Password = passwordHash.HashPassword(data.NewPassword);
+                    context.Logins.Update(logins);
+                    await context.SaveChangesAsync();
+                    message.Status = "success";
+                    message.StatusCode = 200;
+                    message.Message = "Password Changed Sussessfully!";
+                    logger.LogInformation($"{message.Message} By this Email: {email}");
+                    #endregion
+                    return message;
+                }
+
+                else
+                {
+                    #region Login Data not found Response
+                    message.Status = "failed";
+                    message.StatusCode = 404;
+                    message.Message = "Login Data not found";
+                    logger.LogWarning($"{message.Message} By this Email: {email}");
+                    #endregion
+                    return message;
+                }
+            }
+            catch (Exception ex)
+            {
+                #region Handle Exception
+                message.Status = "servererr";
+                message.StatusCode = 501;
+                message.Message = "Error from server side";
+                logger.LogError($"Get an Error with Details - User Email: {email}\nStacktrace: {ex.StackTrace}, \nError Message: {ex.Message}");
+                #endregion
+                return message;
             }
         }
         #endregion

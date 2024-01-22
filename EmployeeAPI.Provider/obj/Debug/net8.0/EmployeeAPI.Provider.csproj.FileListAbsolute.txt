@@ -15,3 +15,20 @@ D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\refint\Employe
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.pdb
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.genruntimeconfig.cache
 D:\DOt_NET Core\EmployeeAPI\EmployeeAPI.Provider\obj\Debug\net8.0\ref\EmployeeAPI.Provider.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.deps.json
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.runtimeconfig.json
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Provider.pdb
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\bin\Debug\net8.0\EmployeeAPI.Contract.pdb
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.AssemblyInfo.cs
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.csproj.CopyComplete
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\refint\EmployeeAPI.Provider.dll
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.pdb
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\EmployeeAPI.Provider.genruntimeconfig.cache
+C:\Users\user\Desktop\Work_Space\EmployeeAPI-main\EmployeeAPI.Provider\obj\Debug\net8.0\ref\EmployeeAPI.Provider.dll
