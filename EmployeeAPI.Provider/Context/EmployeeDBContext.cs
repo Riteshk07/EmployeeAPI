@@ -19,5 +19,6 @@ namespace EmployeeAPI.Provider.Context
         public DbSet<Department> Departments { get; set; }
         public DbSet<Login> Logins { get; set; }
         public DbSet<Todo> Todos { get; set; }
+        public DbSet<CommunityMessage> CommunityMessages { get; set; }
     }
 }

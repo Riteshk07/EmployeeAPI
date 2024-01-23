@@ -41,6 +41,7 @@ namespace EmployeeAPI.Provider.Services
                     hashAlgorithmName,
                     KeySize
                 );
+            
             return CryptographicOperations.FixedTimeEquals(hash, hashInput);
         }
     }

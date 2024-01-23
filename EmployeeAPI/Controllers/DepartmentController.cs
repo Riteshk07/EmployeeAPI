@@ -54,12 +54,10 @@ namespace EmployeeAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         [HttpGet("departments")]
         public async Task<ActionResult<ResponseWIthEterableMessage<DepartmentFetchDto>>> GetAllDepartment()
         {
             logger.LogInformation("Taking Information from claim");
-            int id = Convert.ToInt32(HttpContext.User.Claims.First(c => c.Type == "Id").Value);
             var responseMessage = await deptService.GetAllDepartment();
             if (responseMessage.Status == "success")
             {

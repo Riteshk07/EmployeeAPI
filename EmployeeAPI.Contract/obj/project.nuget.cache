@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yRy1Kp3JuuhRBNFoHVjN61xsGYtnzZ3kPXlyRwAKZlRRsZvAoj0RrTGUXKfX4RAxF+1/Jv+SiWuiBjQQLeswSA==",
+  "dgSpecHash": "LvBvyNU/tW4Iw2vlpDbwPv8ARjEdRFcX4Y/dEz2uh6JjIzqzHmeMMcfmQNEyx8YaXvlOmH17bHz2RF+rxs162g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
+  "projectFilePath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
