@@ -64,9 +64,6 @@ namespace EmployeeAPI.Provider.Services
                     DepartmentName = dept.DepartmentName
                 }).ToListAsync();
 
-                var dept = from dep in context.Departments
-                           where dep.IsActive == true
-                          select dep.DepartmentName;
 
                 message.IterableData = departments;
                 message.Status = "success";

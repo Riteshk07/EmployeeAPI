@@ -12,23 +12,46 @@ namespace EmployeeAPI.Controllers
     public class CommunityMessageController : ControllerBase
     {
         private readonly ICommunityMessageService communityMessageService;
+        private readonly IEncryptMessage encryptMessage;
 
-        public CommunityMessageController(ICommunityMessageService communityMessageService) {
+        public CommunityMessageController(ICommunityMessageService communityMessageService, IEncryptMessage encryptMessage) {
             this.communityMessageService = communityMessageService;
+            this.encryptMessage = encryptMessage;
         }
         [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<ResponseMsg>> SendMessage([FromBody] MessageDto data)
+        [HttpPost("SendMessage/{RecieverId?}")]
+        public async Task<ActionResult<ResponseMsg>> SendMessage([FromBody] MessageDto data, int? RecieverId=null)
         {
-            var resp = await communityMessageService.SendMessage(data);
-            return resp;
+            data.Message = encryptMessage.Encrypt(data.Message);
+            var resp = await communityMessageService.SendMessage(data, HttpContext.User.Claims, RecieverId);
+            if(resp.StatusCode == 200)
+            {
+                return Ok(resp);
+            }else if(resp.StatusCode == 401)
+            {
+                return Unauthorized(resp);
+            }else if (resp.StatusCode == 404)
+            {
+                return NotFound(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
         }
         [Authorize]
-        [HttpGet]
-        public async Task <ActionResult<ResponseWIthEterableMessage<MessageBoxDto>>> DisplayMessage()
+        [HttpGet("DisplayMessage/{RecieverId?}")]
+        public async Task <ActionResult<ResponseWIthEterableMessage<MessageBoxDto>>> DisplayMessage(int?RecieverId=null)
         {
-            var resp = await communityMessageService.DisplayMessage();
-            return resp;
+            var resp = await communityMessageService.DisplayMessage(HttpContext.User.Claims, RecieverId);
+            if(resp.StatusCode == 200)
+            {
+                return Ok(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
 
         }
         [Authorize]

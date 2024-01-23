@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
       "projectName": "EmployeeAPI.Contract",
-      "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\obj\\",
+      "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

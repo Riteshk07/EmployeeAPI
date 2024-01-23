@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj": {}
+    "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj": {
+    "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
         "projectName": "EmployeeAPI.Contract",
-        "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
+        "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\obj\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -62,14 +62,14 @@
         }
       }
     },
-    "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj": {
+    "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj",
         "projectName": "EmployeeAPI.Provider",
-        "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj",
+        "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Provider\\EmployeeAPI.Provider.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Provider\\obj\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Provider\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -89,8 +89,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj": {
-                "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\EmployeeAPI-main\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj"
+              "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj": {
+                "projectPath": "C:\\Users\\user\\Desktop\\Work_Space\\Project\\EmployeeAPI\\EmployeeAPI.Contract\\EmployeeAPI.Contract.csproj"
               }
             }
           }

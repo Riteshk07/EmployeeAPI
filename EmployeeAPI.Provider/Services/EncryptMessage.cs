@@ -14,15 +14,9 @@ namespace EmployeeAPI.Provider.Services
         byte[] key;
         byte[] iv;
         public EncryptMessage() {
-            this.key = new byte[16];
+            this.key = Encoding.ASCII.GetBytes("SAferLKfpewvjoew"); ;
 
-            this.iv = new byte[16];
-
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(key);
-                rng.GetBytes(iv);
-            }
+            this.iv = Encoding.ASCII.GetBytes("jirpwmbritreaqom");
         }
         public string Decrypt(string message)
         {

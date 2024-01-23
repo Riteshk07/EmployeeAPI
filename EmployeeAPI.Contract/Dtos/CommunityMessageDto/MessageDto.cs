@@ -8,6 +8,6 @@ namespace EmployeeAPI.Contract.Dtos.CommunityMessageDto
 {
     public class MessageDto
     {
-        string? Message { get; set; }
+        public string? Message { get; set; }
     }
 }
