@@ -1,4 +1,5 @@
 ﻿using EmployeeAPI.Contract.Dtos.EmployeeDtos;
+using EmployeeAPI.Contract.Dtos.PaginationDto;
 using EmployeeAPI.Contract.Dtos.TodoDtos;
 using EmployeeAPI.Contract.Enums;
 using EmployeeAPI.Contract.Interfaces;
@@ -40,22 +41,73 @@ namespace EmployeeAPI.Provider.Services
         // This method is used for fetching all Employee
         // We give a permission only Admin and SuperAdmin can Access Employee
         #region Getting Employees Method
-        public async Task<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, int page)
+
+        #region Get Ordered 
+        public IQueryable<Employee> GetOrdered (IQueryable<Employee> query, string columnName, bool ace =true)
+        {
+            if (columnName == "Name")
+            {
+                query =ace ? query.OrderBy(x => x.Name): query.OrderByDescending(x => x.Name);
+            }else if (columnName == "Email")
+            {
+                query = ace ? query.OrderBy(x => x.Email) : query.OrderByDescending(x => x.Email);
+            }
+            else if (columnName == "City")
+            {
+                query = ace ? query.OrderBy(x => x.City) : query.OrderByDescending(x => x.City);
+            }
+            else if (columnName == "Email")
+            {
+                query = ace ? query.OrderBy(x => x.Country) : query.OrderByDescending(x => x.Country);
+            }
+            else
+            {
+                query = ace ? query.OrderBy(x => x.Id) : query.OrderByDescending(x => x.Id);
+            }
+            return query;
+        }
+        #endregion
+        public async Task<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, PageDto pageDto)
         {
             ResponseWIthEterableMessage<EmployeeFetchUpdateDto> fetchEmployeeMessage = new ResponseWIthEterableMessage<EmployeeFetchUpdateDto>();
             int startFrom;
             try
             {
-                #region Checking Page Validation
-                if (page <= 0)
+                var query = context.Employees.Include(x => x.Department)
+                    .Where(x => empType == Contract.Enums.EmployeeType.Admin ? x.DepartmentID == deptId && x.IsActive : (empType == Contract.Enums.EmployeeType.SuperAdmin && x.IsActive));
+                if (!pageDto.Search.IsNullOrEmpty())
                 {
-                    fetchEmployeeMessage.Message = "Incorrect Page number";
-                    fetchEmployeeMessage.Status = "failed";
-                    fetchEmployeeMessage.StatusCode = StatusCodes.Status400BadRequest;
-                    fetchEmployeeMessage.IterableData = null;
-                    return fetchEmployeeMessage;
+                    query = query.Where(e => e.Name.Contains(pageDto.Search) 
+                    || e.Email.Contains(pageDto.Search)
+                    || e.City.Contains(pageDto.Search)
+                    || e.Country.Contains(pageDto.Search));
                 }
-                startFrom = (page-1) *10;
+                
+                query = pageDto.OrderBy.IsNullOrEmpty() ? query: GetOrdered(query, pageDto.OrderBy, pageDto.Orders == OrdersType.Asc);
+                    
+                IQueryable<EmployeeFetchUpdateDto> empFetch ;
+
+                empFetch = query.Select(emp => new EmployeeFetchUpdateDto()
+                {
+                    Id = emp.Id,
+                    DepartmentID = emp.DepartmentID,
+                    DepartmentName = emp.Department != null ? emp.Department.DepartmentName : "",
+                    Name = emp.Name,
+                    Email = emp.Email,
+                    Phone = emp.Phone,
+                    Address = emp.Address,
+                    EmployeeType = emp.EmployeeType,
+                    City = emp.City,
+                    Country = emp.Country
+                });
+                #region Checking Page Validation
+                if (pageDto.IsPagination)
+                {
+                    var take = Convert.ToInt32(pageDto.Take != null ? pageDto.Take : 0);
+                    var index = Convert.ToInt32(pageDto.Index != null ? pageDto.Index : 0);
+                    empFetch = empFetch.Skip(take*index).Take(take);
+                }
+                
                 #endregion
 
                 #region Server Validation and Fetching Data
@@ -64,25 +116,8 @@ namespace EmployeeAPI.Provider.Services
                     
                 logger.LogInformation("Fetching Employees from Database...");
                 var sw = Stopwatch.StartNew();
-                var qry =
-                fetchEmployeeMessage.IterableData = await context.Employees.Include(x => x.Department)
-                    .Where(x => empType == Contract.Enums.EmployeeType.Admin ? x.DepartmentID == deptId && x.IsActive : (empType == Contract.Enums.EmployeeType.SuperAdmin && x.IsActive))
-                    .Select(emp => new EmployeeFetchUpdateDto()
-                    {
-                        Id = emp.Id,
-                        DepartmentID = emp.DepartmentID,
-                        DepartmentName = emp.Department != null ? emp.Department.DepartmentName : "",
-                        Name = emp.Name,
-                        Email = emp.Email,
-                        Phone = emp.Phone,
-                        Address = emp.Address,
-                        EmployeeType = emp.EmployeeType,
-                        City = emp.City,
-                        Country = emp.Country
-                    })
-                    .Skip(startFrom)
-                    .Take(10)
-                    .ToListAsync();
+                
+                fetchEmployeeMessage.IterableData = await empFetch.ToListAsync();
                 sw.Stop();
 
                 var timeElips = sw.ElapsedMilliseconds;

@@ -12,5 +12,7 @@ namespace EmployeeAPI.Contract.Dtos.CommunityMessageDto
         public int EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
         public string? LastMessage { get; set; }
+        public bool IsSeen { get; set; }
+        public int NewMessages { get; set; }
     }
 }

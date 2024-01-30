@@ -39,8 +39,14 @@ namespace EmployeeAPI.Provider.Migrations
                     b.Property<string>("EmployeeName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("MessageDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RecieverId")
                         .HasColumnType("int");
@@ -158,13 +164,16 @@ namespace EmployeeAPI.Provider.Migrations
                     b.Property<int?>("AssignBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("AssignById")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted")
@@ -206,9 +215,7 @@ namespace EmployeeAPI.Provider.Migrations
                 {
                     b.HasOne("EmployeeAPI.Contract.Models.Employee", "Employee")
                         .WithMany("Todos")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Employee");
                 });

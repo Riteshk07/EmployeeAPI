@@ -43,16 +43,25 @@ namespace EmployeeAPI.Provider.Services
             try
             {
                 var messages = await context.CommunityMessages
-                    .Where(m => m.RecieverId != null ? m.RecieverId == RecieverId : m.DepartmentId ==deptId)
-                    .Select(m => new MessageBoxDto()
-                    {
-                        Id = m.Id,
-                        Name = m.EmployeeName,
-                        Message = m.Message != null ? encryptMessage.Decrypt( m.Message): "",
-                        UserType = m.UserType
-                    })
+                    .Where(m => m.RecieverId != null ? (m.RecieverId == empId || m.EmployeeId == RecieverId) || (m.RecieverId == RecieverId || m.EmployeeId == empId) : m.DepartmentId ==deptId)
                     .ToListAsync();
-                msg.IterableData = messages;
+                List<MessageBoxDto> messageBoxDtos = new List<MessageBoxDto>();
+                foreach (var item in messages)
+                {
+                    item.IsSeen = true;
+                    
+                    messageBoxDtos.Add(new MessageBoxDto()
+                    {
+                        Id = item.Id,
+                        Name = item.EmployeeName,
+                        Message = item.Message != null ? encryptMessage.Decrypt(item.Message) : "",
+                        UserType = item.UserType,
+                        IsSeen = item.IsSeen,
+                        MessageDate = item.MessageDate
+                    });
+                }
+                await context.SaveChangesAsync();
+                msg.IterableData = messageBoxDtos;
                 msg.Message = "Message fetched successfully";
                 msg.StatusCode = 200;
                 msg.Status = "success";
@@ -81,13 +90,18 @@ namespace EmployeeAPI.Provider.Services
 
             try
             {
-                var Chats = await context.CommunityMessages.Where(m => m.RecieverId == empId).GroupBy(m => m.EmployeeId).Select(mGroup => new ChatBoxDto()
+                
+                var Chats = await context.CommunityMessages.Where(m => m.RecieverId == empId)
+                    .GroupBy(m => m.EmployeeId)
+                    .Select(mGroup => new ChatBoxDto()
                 {
                     EmployeeId = mGroup.Key,
-                    LastMessage = mGroup.Last().Message,
-                    EmployeeName = mGroup.Last().Message
-
-                }).ToListAsync();
+                    LastMessage = encryptMessage.Decrypt(mGroup.OrderByDescending(x=> x.Id).FirstOrDefault().Message),
+                    EmployeeName = mGroup.First().EmployeeName,
+                    IsSeen = mGroup.OrderByDescending(x => x.Id).FirstOrDefault().IsSeen,
+                    NewMessages = mGroup.Where(m => m.IsSeen == false).Count()
+                })
+                    .ToListAsync();
                 msg.IterableData = Chats;
                 msg.Message = "Chats fetched successfully";
                 msg.StatusCode = 200;
@@ -124,8 +138,12 @@ namespace EmployeeAPI.Provider.Services
                 communityMessage.Message = message.Message;
                 communityMessage.UserType = empType;
                 communityMessage.DepartmentId = deptId;
+                communityMessage.RecieverId = RecieverId;
+                communityMessage.MessageDate = DateTime.UtcNow;
+                communityMessage.IsSeen = false;
                 await context.CommunityMessages.AddAsync(communityMessage);
                 await context.SaveChangesAsync();
+
                 responseMsg.Message = "Message saved successfull";
                 responseMsg.StatusCode = 200;
                 responseMsg.Status = "success";
