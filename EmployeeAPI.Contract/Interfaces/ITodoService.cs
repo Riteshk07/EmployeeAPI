@@ -20,5 +20,6 @@ namespace EmployeeAPI.Contract.Interfaces
 
         public Task<ResponseWIthEterableMessage<TodoFetchDto>> GetAllTask(IEnumerable<Claim> claim, int Page);
 
+        public Task<ResponseMsg> SetTodoCompleted(int todoId, SetCompletedTodoDto todoDto);
     }
 }

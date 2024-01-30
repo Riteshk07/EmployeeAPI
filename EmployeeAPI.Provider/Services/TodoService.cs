@@ -342,5 +342,43 @@ namespace EmployeeAPI.Provider.Services
             }
         }
         #endregion
+        public async Task<ResponseMsg> SetTodoCompleted(int todoId,  SetCompletedTodoDto todoDto)
+        {
+            ResponseMsg message = new ResponseMsg();
+            try
+            {
+                var todo = await context.Todos.FirstOrDefaultAsync(x => x.Id == todoId);
+                if (todo != null)
+                {
+                    todo.IsCompleted = todoDto.IsCompleted;
+                    context.Todos.Update(todo);
+                    await context.SaveChangesAsync();
+                    message.Status = "success";
+                    message.Message = "Tasks Updated successfully";
+                    message.StatusCode = 200;
+                    logger.LogInformation($"{message.Message}");
+                    return message;
+                }
+                else
+                {
+                    #region Task Not found Response
+                    message.Status = "failed";
+                    message.Message = "Todos not found";
+                    message.StatusCode = 404;
+                    logger.LogWarning($"{message.Message}");
+                    #endregion
+
+                    return message;
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.Message);
+                message.Status = "servererr";
+                message.Message = "Error from server side";
+                message.StatusCode = 500;
+                return message;
+            }
+        }
     }
 }
