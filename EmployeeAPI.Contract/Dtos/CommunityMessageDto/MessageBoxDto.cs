@@ -12,5 +12,7 @@ namespace EmployeeAPI.Contract.Dtos.CommunityMessageDto
         public string? Message { get; set; }
         public string? Name { get; set; }
         public string? UserType { get; set; }
+        public bool IsSeen { get; set; }
+        public DateTime MessageDate { get; set; }
     }
 }

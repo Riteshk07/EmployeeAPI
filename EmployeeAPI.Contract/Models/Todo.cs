@@ -21,12 +21,13 @@ namespace EmployeeAPI.Contract.Models
 
         public EmployeeType? AssignBy { get; set; }
 
-        public int EmployeeId { get; set; }
+        public int? EmployeeId { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
         public Employee? Employee { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
+        public int AssignById { get; set; }
 
     }
 }

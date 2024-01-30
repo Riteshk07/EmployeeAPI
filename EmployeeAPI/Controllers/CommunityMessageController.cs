@@ -40,10 +40,10 @@ namespace EmployeeAPI.Controllers
             }
         }
         [Authorize]
-        [HttpGet("DisplayMessage/{RecieverId?}")]
-        public async Task <ActionResult<ResponseWIthEterableMessage<MessageBoxDto>>> DisplayMessage(int?RecieverId=null)
+        [HttpGet("DisplayMessage/{EmployeeId?}")]
+        public async Task <ActionResult<ResponseWIthEterableMessage<MessageBoxDto>>> DisplayMessage(int?EmployeeId=null)
         {
-            var resp = await communityMessageService.DisplayMessage(HttpContext.User.Claims, RecieverId);
+            var resp = await communityMessageService.DisplayMessage(HttpContext.User.Claims, EmployeeId);
             if(resp.StatusCode == 200)
             {
                 return Ok(resp);
@@ -60,6 +60,21 @@ namespace EmployeeAPI.Controllers
         {
             var resp = await communityMessageService.DeleteMessage(Id);
             return resp;
+        }
+
+        [Authorize]
+        [HttpGet("GetChatBox")]
+        public async Task <ActionResult<ResponseWIthEterableMessage<ChatBoxDto>>> GetChatBox()
+        {
+            var resp = await communityMessageService.GetChatBox(HttpContext.User.Claims);
+            if (resp.StatusCode == 200)
+            {
+                return Ok(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
         }
     }
 }

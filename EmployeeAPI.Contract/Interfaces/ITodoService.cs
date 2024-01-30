@@ -12,7 +12,7 @@ namespace EmployeeAPI.Contract.Interfaces
 {
     public interface ITodoService
     {
-        public Task<ResponseWithObjectMessage<TodoFetchDto>> AssignTask(int id, IEnumerable<Claim> claim, TodoDto todoDto);
+        public Task<ResponseWithObjectMessage<TodoFetchDto>> AssignTask( IEnumerable<Claim> claim, TodoDto todoDto);
 
         public Task<ResponseMsg> RemoveTask(int todoId, IEnumerable<Claim> claim);
 

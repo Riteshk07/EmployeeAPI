@@ -10,7 +10,9 @@ namespace EmployeeAPI.Contract.Dtos.TodoDtos
     public class TodoFetchDto: TodoDto
     {
         public int Id { get; set; }
-        public int EmployeeId { get; set; }
+        public int? DepartmentId { get; set; }
+        public string? EmployeeName { get; set; }
+        public string? DepartmentName { get; set; }
         public EmployeeType? AssignBy { get; set; }
     }
 }

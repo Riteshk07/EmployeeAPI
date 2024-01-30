@@ -1,4 +1,5 @@
 ﻿using EmployeeAPI.Contract.Dtos.EmployeeDtos;
+using EmployeeAPI.Contract.Dtos.PaginationDto;
 using EmployeeAPI.Contract.Enums;
 using EmployeeAPI.Contract.Models;
 using EmployeeAPI.Contract.ResponseMessage;
@@ -12,7 +13,7 @@ namespace EmployeeAPI.Contract.Interfaces
 {
     public interface IEmployeeService
     {
-        public Task<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, int page);
+        public Task<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, PageDto pageDto);
 
         public Task<ResponseWithObjectMessage<EmployeeFetchUpdateDto>> CurrentUser(int id);
 

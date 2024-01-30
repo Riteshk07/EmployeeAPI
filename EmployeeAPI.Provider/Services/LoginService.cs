@@ -112,7 +112,6 @@ namespace EmployeeAPI.Provider.Services
                         {
                             Status = "failed",
                             Message = "Incorrect User Password!",
-                            StatusCode = 401,
                             Data = null,
                             Token = null
                         };
@@ -175,7 +174,7 @@ namespace EmployeeAPI.Provider.Services
                     LoginResponseMessage loginMessageDto = new LoginResponseMessage()
                     {
                         Status = "failed",
-                        Message = "Unauthorized User | Invalid user id and password",
+                        Message = "Invalid Email id",
                         StatusCode = 401,
                         Data = null,
                         Token = null

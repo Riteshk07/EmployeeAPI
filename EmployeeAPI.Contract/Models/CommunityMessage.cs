@@ -15,5 +15,7 @@ namespace EmployeeAPI.Contract.Models
         public int? RecieverId { get; set; }
         public int DepartmentId { get; set; }
         public string? UserType { get; set; }
+        public bool IsSeen { get; set; } = false;
+        public DateTime MessageDate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EmployeeAPI.Contract.Dtos.EmployeeDtos;
+using EmployeeAPI.Contract.Dtos.PaginationDto;
 using EmployeeAPI.Contract.Enums;
 using EmployeeAPI.Contract.Interfaces;
 using EmployeeAPI.Contract.Models;
@@ -36,8 +37,8 @@ namespace EmployeeAPI.Controllers
 
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        [HttpGet("employees/{page}")]
-        public async Task<ActionResult<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>>> GetEmployee(int page) {
+        [HttpPost("employees")]
+        public async Task<ActionResult<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>>> GetEmployee([FromBody] PageDto pageDto) {
             logger.LogInformation("Request Recieved for fetching Employee...");
 
             logger.LogInformation("Taking Information from claim");
@@ -47,7 +48,7 @@ namespace EmployeeAPI.Controllers
             
             EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), type);
             
-            var resMessage = await empService.GetEmployees(userId, empType, deptId ,page);
+            var resMessage = await empService.GetEmployees(userId, empType, deptId, pageDto);
 
             if (resMessage.Status == "success")
             {

@@ -24,15 +24,15 @@ namespace EmployeeAPI.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        [HttpPost("add/{EmployeeId}")]
-        public async Task<ActionResult<ResponseWithObjectMessage<TodoFetchDto>>> AddTodo(int EmployeeId, [FromBody] TodoDto todoDto)
+        [HttpPost("add")]
+        public async Task<ActionResult<ResponseWithObjectMessage<TodoFetchDto>>> AddTodo([FromBody] TodoDto todoDto)
         {
             logger.LogInformation("Taking Information from claim");
             int userId = Convert.ToInt32(HttpContext.User.Claims.First(e => e.Type == "Id").Value);
 
             IEnumerable<Claim> claim = HttpContext.User.Claims;
 
-            var responseMessage = await todoService.AssignTask(EmployeeId, claim, todoDto);
+            var responseMessage = await todoService.AssignTask(claim, todoDto);
             if (responseMessage.Status == "success")
             {
                 return Ok(responseMessage);

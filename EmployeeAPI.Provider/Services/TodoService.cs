@@ -7,6 +7,7 @@ using EmployeeAPI.Provider.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace EmployeeAPI.Provider.Services
         #endregion
 
         #region Method for Task Assigning for Employee
-        public async Task<ResponseWithObjectMessage<TodoFetchDto>> AssignTask(int id, IEnumerable<Claim> claim, TodoDto todoDto)
+        public async Task<ResponseWithObjectMessage<TodoFetchDto>> AssignTask(IEnumerable<Claim> claim, TodoDto todoDto)
         {
             ResponseWithObjectMessage<TodoFetchDto> todoAssignTaskMessage = new ResponseWithObjectMessage<TodoFetchDto>();
             try
@@ -45,12 +46,9 @@ namespace EmployeeAPI.Provider.Services
 
                 logger.LogInformation("Checking User Information for Assigning Task");
                 
-                var toAssignUser = context.Employees.Find(id);
-                if (toAssignUser != null)
-                {
-                    
+                
                     Todo todo = new Todo();
-                    if (empType == Contract.Enums.EmployeeType.SuperAdmin || (empType == Contract.Enums.EmployeeType.Admin && DeptId == toAssignUser.DepartmentID))
+                    if (empType == Contract.Enums.EmployeeType.SuperAdmin || (empType == Contract.Enums.EmployeeType.Admin))
                     {
                         #region Assigning Task
                         logger.LogInformation("Assigning Task");
@@ -58,9 +56,10 @@ namespace EmployeeAPI.Provider.Services
                         todoAssignTaskMessage.Data.Title =  todo.Title = todoDto.Title;
                         todoAssignTaskMessage.Data.Description = todo.Description = todoDto.Description;
                         todoAssignTaskMessage.Data.IsCompleted = todo.IsCompleted = todoDto.IsCompleted;
-                        todoAssignTaskMessage.Data.EmployeeId = todo.EmployeeId = id;
+                        todoAssignTaskMessage.Data.EmployeeId = null;
                         todoAssignTaskMessage.Data.AssignBy = todo.AssignBy = empType;
-                        todo.DepartmentId = toAssignUser.DepartmentID;
+                        todo.AssignById = userId;
+                        todo.DepartmentId = empType == EmployeeType.Admin ? DeptId : null;
 
                         await context.Todos.AddAsync(todo);
                         await context.SaveChangesAsync();
@@ -68,7 +67,7 @@ namespace EmployeeAPI.Provider.Services
 
                         todoAssignTaskMessage.Message = "Task Assign Successfully";
                         todoAssignTaskMessage.Status = "success";
-                        logger.LogInformation($"{todoAssignTaskMessage.Message} By This userId: {userId} to this Employee Id: {id}");
+                        logger.LogInformation($"{todoAssignTaskMessage.Message} By This userId: {userId}");
                         #endregion
                         return todoAssignTaskMessage;
                     }
@@ -84,19 +83,8 @@ namespace EmployeeAPI.Provider.Services
 
                         return todoAssignTaskMessage;
                     }
-                }
-                else
-                {
-                    #region To Assign User not found Response
-                    todoAssignTaskMessage.Message = "User not found";
-                    todoAssignTaskMessage.Status = "failed";
-                    todoAssignTaskMessage.Data = null;
-                    todoAssignTaskMessage.StatusCode = 404;
-                    logger.LogWarning($"{todoAssignTaskMessage.Message}\nIncorrect User Id: {userId} or Employee Id{id}");
-                    #endregion
-
-                    return todoAssignTaskMessage;
-                }
+                
+               
             }
             catch (Exception ex)
             {
@@ -188,8 +176,18 @@ namespace EmployeeAPI.Provider.Services
                 #endregion
 
                 logger.LogInformation("Checking User Information for Updating Task");
-                var currentUser = context.Employees.Find(userId);
-                
+                var emp = await context.Employees.Include(d => d.Department)
+                        .FirstOrDefaultAsync(e => e.Id == todoDto.EmployeeId);
+                if (emp != null)
+                {
+                    if (emp.EmployeeType == EmployeeType.SuperAdmin)
+                    {
+                        message.Message = "User don't have a permission to assign task to SuperAdmin";
+                        message.Status = "failed";
+                        message.StatusCode = 401;
+                        return message;
+                    } 
+                }
 
                 logger.LogInformation("Finding Task...");
                 var todo = await context.Todos.FindAsync(todoId);
@@ -208,10 +206,16 @@ namespace EmployeeAPI.Provider.Services
                 logger.LogInformation($"Checking User Type for updating task to this Id: {todo.EmployeeId}");
                 if (empType == Contract.Enums.EmployeeType.SuperAdmin || (empType == Contract.Enums.EmployeeType.Admin && DeptId == todo.DepartmentId))
                 {
-                    todo.Title = todoDto.Title;
-                    todo.Description = todoDto.Description;
+                    todo.Title = todoDto.Title.IsNullOrEmpty()? todo.Title: todoDto.Title;
+                    todo.Description = todoDto.Description.IsNullOrEmpty() ? todo.Description: todoDto.Description;
                     todo.IsCompleted = todoDto.IsCompleted;
+                    if (emp != null)
+                    {
+                        todo.EmployeeId = emp?.Id;
+                        todo.DepartmentId = emp?.DepartmentID;
+                    }
                     todo.AssignBy = empType;
+                    todo.AssignById = userId;
 
                     context.Todos.Update(todo); 
                     await context.SaveChangesAsync();
@@ -219,7 +223,13 @@ namespace EmployeeAPI.Provider.Services
                     message.Message = "Task Updated Successfully";
                     message.Status = "success";
                     logger.LogInformation($"{message.Message} by this Id: {userId}");
-                        
+
+                }
+                else
+                {
+                    message.Message = "User don't have a permission to update Task to diffrent Department";
+                    message.Status = "failed";
+                    message.StatusCode = 401;
                 }
                 #endregion
                 return message;
@@ -260,16 +270,20 @@ namespace EmployeeAPI.Provider.Services
                 int startFrom = (page - 1) *10;
                 if (empType == Contract.Enums.EmployeeType.SuperAdmin)
                 {
-                    todos = await context.Todos.Where(t => t.AssignBy== Contract.Enums.EmployeeType.SuperAdmin).Skip(startFrom).Take(10).ToListAsync();
+                    todos = await context.Todos.Include(e=> e.Employee)
+                        .Skip(startFrom).Take(10).ToListAsync();
                 }
                 else if (empType == Contract.Enums.EmployeeType.Admin)
                 {
-                    todos = await context.Todos.Where(y => y.DepartmentId == DeptId && y.AssignBy== Contract.Enums.EmployeeType.Admin).Skip(startFrom).Take(10).ToListAsync();
+                    todos = await context.Todos.Include(e => e.Employee)
+                        .Where(y =>y.DepartmentId == DeptId).Skip(startFrom).Take(10).ToListAsync();
                 }
                 else
                 {
-                    todos = await context.Todos.Where(z => z.EmployeeId == userId).Skip(startFrom).Take(10).ToListAsync();
+                    todos = await context.Todos.Include(e => e.Employee)
+                        .Where(z => z.EmployeeId == userId).Skip(startFrom).Take(10).ToListAsync();
                 }
+                var departments = await context.Departments.ToListAsync();
                 #endregion
 
 
@@ -287,6 +301,9 @@ namespace EmployeeAPI.Provider.Services
                             Description = todo.Description,
                             IsCompleted = todo.IsCompleted,
                             EmployeeId = todo.EmployeeId,
+                            EmployeeName = todo.Employee?.Name,
+                            DepartmentId = todo.DepartmentId,
+                            DepartmentName = departments.Where(d => d.Id == todo.DepartmentId).FirstOrDefault()?.DepartmentName,
                             AssignBy = todo.AssignBy
                         });
                     }
