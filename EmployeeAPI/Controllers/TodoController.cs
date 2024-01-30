@@ -124,5 +124,23 @@ namespace EmployeeAPI.Controllers
                 return BadRequest(responseMessage);
             }
         }
+
+        [Authorize]
+        [HttpPost("SetTodoCompleted/{TodoId}")]
+        public async Task<ActionResult<ResponseMsg>> SetTodoCompleted([FromBody]SetCompletedTodoDto setCompletedTodo, int TodoId)
+        {
+            var resp = await todoService.SetTodoCompleted(TodoId, setCompletedTodo);
+            if(resp.StatusCode== 200)
+            {
+                return Ok(resp);
+            }else if(resp.StatusCode == 404)
+            {
+                return NotFound(resp);
+            }
+            else
+            {
+                return BadRequest(resp);
+            }
+        }
     }
 }
