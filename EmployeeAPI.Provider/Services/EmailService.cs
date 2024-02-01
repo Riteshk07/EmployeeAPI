@@ -36,11 +36,7 @@ namespace EmployeeAPI.Provider.Services
             this.configuration = configuration;
         }
 
-        /// <summary>
-        /// This method will Check first user and send Email to provided Email id by user
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
+        
         public async Task<ResponseMsg> ForgetPassword(string email)
         {
             ResponseMsg msg = new ResponseMsg();
@@ -90,6 +86,12 @@ namespace EmployeeAPI.Provider.Services
             }
         }
 
+        /// <summary>
+        /// This method is used for send email to Employee. User can send Email is if user not logged on.
+        /// </summary>
+        /// <param name="toemail"></param>
+        /// <param name="emp"></param>
+        /// <returns>ResponseMsg</returns>
         public async Task<ResponseMsg> SendEmail(string toemail, Employee emp)
         {
 
@@ -131,6 +133,11 @@ namespace EmployeeAPI.Provider.Services
             }
         }
 
+        /// <summary>
+        /// This method is used for generating a link with token
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns>string</returns>
         public string GenerateLink(Employee emp)
         {
             string resp = loginService.GeneratingToken(emp);
@@ -138,6 +145,7 @@ namespace EmployeeAPI.Provider.Services
             return link;
         }
 
+        
         public async Task<ResponseMsg> ResetPassword(string password , string token)
         {
             ResponseMsg msg = new ResponseMsg();
@@ -215,7 +223,34 @@ namespace EmployeeAPI.Provider.Services
                 return null;
             }
         }
-
+        public async Task<ResponseMsg> CheckEmail(string Email)
+        {
+            ResponseMsg msg =  new ResponseMsg();
+            try
+            {
+                var employee = await context.Logins.FirstOrDefaultAsync(l => l.Email == Email);
+                if (employee != null)
+                {
+                    msg.Status = "success";
+                    msg.StatusCode = 200;
+                    msg.Message = "User is Exist";
+                }
+                else
+                {
+                    msg.Status = "failed";
+                    msg.StatusCode = 404;
+                    msg.Message = "User not found";
+                }
+                return msg;
+            }catch(Exception ex)
+            {
+                logger.LogError($"Tracing Error: {ex.StackTrace}\nError Message: {ex.Message}");
+                msg.Status = "servererr";
+                msg.StatusCode = 500;
+                msg.Message = "Error from server side";
+                return msg;
+            }
+        }
 
     }
 }

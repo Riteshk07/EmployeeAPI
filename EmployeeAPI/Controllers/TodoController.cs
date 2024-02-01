@@ -1,4 +1,5 @@
-﻿using EmployeeAPI.Contract.Dtos.TodoDtos;
+﻿using EmployeeAPI.Contract.Dtos.PaginationDto;
+using EmployeeAPI.Contract.Dtos.TodoDtos;
 using EmployeeAPI.Contract.Interfaces;
 using EmployeeAPI.Contract.Models;
 using EmployeeAPI.Contract.ResponseMessage;
@@ -102,13 +103,13 @@ namespace EmployeeAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("tasks/{Page}")]
-        public async Task<ActionResult<ResponseWIthEterableMessage<TodoFetchDto>>> GetAllTask(int Page)
+        [HttpPost("tasks")]
+        public async Task<ActionResult<ResponseWithDataAndCount<TodoFetchDto>>> GetAllTask([FromBody] TodoPageDto pageDto)
         {
             logger.LogInformation("Taking Information from claim");
 
             IEnumerable<Claim> claim = HttpContext.User.Claims;
-            var responseMessage = await todoService.GetAllTask(claim, Page);
+            var responseMessage = await todoService.GetAllTask(claim, pageDto);
             if (responseMessage.Status == "success")
             {
                 return Ok(responseMessage);
@@ -125,17 +126,21 @@ namespace EmployeeAPI.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles ="User")]
         [HttpPost("SetTodoCompleted/{TodoId}")]
         public async Task<ActionResult<ResponseMsg>> SetTodoCompleted([FromBody]SetCompletedTodoDto setCompletedTodo, int TodoId)
         {
-            var resp = await todoService.SetTodoCompleted(TodoId, setCompletedTodo);
+            var resp = await todoService.SetTodoCompleted(TodoId, setCompletedTodo, HttpContext.User.Claims);
             if(resp.StatusCode== 200)
             {
                 return Ok(resp);
             }else if(resp.StatusCode == 404)
             {
                 return NotFound(resp);
+            }
+            else if (resp.StatusCode == 401)
+            {
+                return Unauthorized(resp);
             }
             else
             {

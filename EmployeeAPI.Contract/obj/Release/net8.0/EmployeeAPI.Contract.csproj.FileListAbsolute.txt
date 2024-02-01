@@ -1,0 +1,12 @@
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\bin\Release\net8.0\EmployeeAPI.Contract.deps.json
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\bin\Release\net8.0\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\bin\Release\net8.0\EmployeeAPI.Contract.pdb
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.AssemblyInfo.cs
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.sourcelink.json
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\refint\EmployeeAPI.Contract.dll
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\EmployeeAPI.Contract.pdb
+C:\Users\user\Desktop\Work_Space\Project\EmployeeAPI\EmployeeAPI.Contract\obj\Release\net8.0\ref\EmployeeAPI.Contract.dll
