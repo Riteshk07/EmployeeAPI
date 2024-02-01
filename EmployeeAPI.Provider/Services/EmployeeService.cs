@@ -56,7 +56,7 @@ namespace EmployeeAPI.Provider.Services
             {
                 query = ace ? query.OrderBy(x => x.City) : query.OrderByDescending(x => x.City);
             }
-            else if (columnName == "Email")
+            else if (columnName == "Country")
             {
                 query = ace ? query.OrderBy(x => x.Country) : query.OrderByDescending(x => x.Country);
             }
@@ -67,9 +67,9 @@ namespace EmployeeAPI.Provider.Services
             return query;
         }
         #endregion
-        public async Task<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, PageDto pageDto)
+        public async Task<ResponseWithDataAndCount<EmployeeFetchUpdateDto>> GetEmployees(int id, EmployeeType empType, int deptId, PageDto pageDto)
         {
-            ResponseWIthEterableMessage<EmployeeFetchUpdateDto> fetchEmployeeMessage = new ResponseWIthEterableMessage<EmployeeFetchUpdateDto>();
+            ResponseWithDataAndCount<EmployeeFetchUpdateDto> fetchEmployeeMessage = new ResponseWithDataAndCount<EmployeeFetchUpdateDto>();
             int startFrom;
             try
             {
@@ -100,6 +100,7 @@ namespace EmployeeAPI.Provider.Services
                     City = emp.City,
                     Country = emp.Country
                 });
+                int count = await query.CountAsync();
                 #region Checking Page Validation
                 if (pageDto.IsPagination)
                 {
@@ -124,6 +125,7 @@ namespace EmployeeAPI.Provider.Services
                 logger.LogInformation($"Query taking Time in EF Core: {timeElips}");
                 fetchEmployeeMessage.Message = "Users Fetched Successfully";
                 fetchEmployeeMessage.Status = "success";
+                fetchEmployeeMessage.Count = count;
                 #endregion
 
                 logger.LogInformation("Employee Fetched!");
@@ -214,6 +216,16 @@ namespace EmployeeAPI.Provider.Services
                 logger.LogInformation($"Validating Employee...");
                 if (!emp.Name.IsNullOrEmpty() && validService.ValidateEmail(emp.Email) && validService.ValidatePassword(emp.Password))
                 {
+                    #region Checking Employee Alredy Exist
+                    var isUserExist = await context.Logins.FirstOrDefaultAsync(x => x.Email == emp.Email);
+                    if(isUserExist != null)
+                    {
+                        message.Status = "failed";
+                        message.StatusCode = 400;
+                        message.Message = "User Email Already Exist";
+                        return message;
+                    }
+                    #endregion
                     logger.LogInformation($"Validated");
                     Employee obj = new Employee
                     {

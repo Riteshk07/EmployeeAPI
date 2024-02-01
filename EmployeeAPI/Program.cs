@@ -122,13 +122,17 @@ builder.Services.AddSwaggerGen(opt =>
 
 var app = builder.Build();
 
+app.UseCors(policy => policy.AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
 app.Logger.LogInformation("Calling From Program.cs Class");
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 
 

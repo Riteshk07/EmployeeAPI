@@ -38,7 +38,7 @@ namespace EmployeeAPI.Controllers
 
         [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPost("employees")]
-        public async Task<ActionResult<ResponseWIthEterableMessage<EmployeeFetchUpdateDto>>> GetEmployee([FromBody] PageDto pageDto) {
+        public async Task<ActionResult<ResponseWithDataAndCount<EmployeeFetchUpdateDto>>> GetEmployee([FromBody] PageDto pageDto) {
             logger.LogInformation("Request Recieved for fetching Employee...");
 
             logger.LogInformation("Taking Information from claim");

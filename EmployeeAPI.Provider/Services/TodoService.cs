@@ -1,4 +1,5 @@
-﻿using EmployeeAPI.Contract.Dtos.TodoDtos;
+﻿using EmployeeAPI.Contract.Dtos.PaginationDto;
+using EmployeeAPI.Contract.Dtos.TodoDtos;
 using EmployeeAPI.Contract.Enums;
 using EmployeeAPI.Contract.Interfaces;
 using EmployeeAPI.Contract.Models;
@@ -8,12 +9,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace EmployeeAPI.Provider.Services
 {
@@ -30,6 +33,25 @@ namespace EmployeeAPI.Provider.Services
         }
         #endregion
 
+        #region Get Order Method
+        private IQueryable<Todo> GetOrder(IQueryable<Todo> query, string columnName, bool ace = true)
+        {
+            if (columnName == "Title")
+            {
+                query = ace ? query.OrderBy(x => x.Title) : query.OrderByDescending(x => x.Title);
+            }
+            else if (columnName == "Description")
+            {
+                query = ace ? query.OrderBy(x => x.Description) : query.OrderByDescending(x => x.Description);
+            }
+            else
+            {
+                query = ace ? query.OrderBy(x => x.Id) : query.OrderByDescending(x => x.Id);
+            }
+            return query;
+        }
+        #endregion
+
         #region Method for Task Assigning for Employee
         public async Task<ResponseWithObjectMessage<TodoFetchDto>> AssignTask(IEnumerable<Claim> claim, TodoDto todoDto)
         {
@@ -43,7 +65,12 @@ namespace EmployeeAPI.Provider.Services
                 EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
                 #endregion
-
+                Employee? emp = null;
+                if(todoDto.EmployeeId != null)
+                {
+                    emp = await context.Employees.Include(d => d.Department)
+                        .FirstOrDefaultAsync(e => e.Id == todoDto.EmployeeId);
+                }
                 logger.LogInformation("Checking User Information for Assigning Task");
                 
                 
@@ -56,11 +83,12 @@ namespace EmployeeAPI.Provider.Services
                         todoAssignTaskMessage.Data.Title =  todo.Title = todoDto.Title;
                         todoAssignTaskMessage.Data.Description = todo.Description = todoDto.Description;
                         todoAssignTaskMessage.Data.IsCompleted = todo.IsCompleted = todoDto.IsCompleted;
-                        todoAssignTaskMessage.Data.EmployeeId = null;
+                        todoAssignTaskMessage.Data.EmployeeId =todo.EmployeeId = todoDto.EmployeeId != null ? todoDto.EmployeeId : null;
                         todoAssignTaskMessage.Data.AssignBy = todo.AssignBy = empType;
                         todo.AssignById = userId;
-                        todo.DepartmentId = empType == EmployeeType.Admin ? DeptId : null;
-
+                        todoAssignTaskMessage.Data.DepartmentId = todo.DepartmentId = empType == EmployeeType.Admin ? DeptId : (emp != null ? emp.DepartmentID: null);
+                        todoAssignTaskMessage.Data.DepartmentName = emp != null ? emp.Department?.DepartmentName:null;
+                        todoAssignTaskMessage.Data.EmployeeName = emp != null ? emp.Name : null;
                         await context.Todos.AddAsync(todo);
                         await context.SaveChangesAsync();
 
@@ -182,7 +210,7 @@ namespace EmployeeAPI.Provider.Services
                 {
                     if (emp.EmployeeType == EmployeeType.SuperAdmin)
                     {
-                        message.Message = "User don't have a permission to assign task to SuperAdmin";
+                        message.Message = "User don't have a permission to Update task for SuperAdmin";
                         message.Status = "failed";
                         message.StatusCode = 401;
                         return message;
@@ -250,10 +278,10 @@ namespace EmployeeAPI.Provider.Services
         #endregion
 
         #region Get All Task Method 
-        public async Task<ResponseWIthEterableMessage<TodoFetchDto>> GetAllTask(IEnumerable<Claim> claim, int page)
+        public async Task<ResponseWithDataAndCount<TodoFetchDto>> GetAllTask(IEnumerable<Claim> claim, TodoPageDto pageDto)
         {
-            List<Todo> todos;
-            ResponseWIthEterableMessage<TodoFetchDto> message = new ResponseWIthEterableMessage<TodoFetchDto>();
+            IQueryable<Todo> todos;
+            ResponseWithDataAndCount<TodoFetchDto> message = new ResponseWithDataAndCount<TodoFetchDto>();
             try
             {
                 #region Claming Information
@@ -267,22 +295,47 @@ namespace EmployeeAPI.Provider.Services
 
                 logger.LogInformation("Checking Employee Type...");
                 logger.LogInformation("Finding Task...");
-                int startFrom = (page - 1) *10;
                 if (empType == Contract.Enums.EmployeeType.SuperAdmin)
                 {
-                    todos = await context.Todos.Include(e=> e.Employee)
-                        .Skip(startFrom).Take(10).ToListAsync();
+                    todos = context.Todos.Include(e => e.Employee);
+                        
                 }
                 else if (empType == Contract.Enums.EmployeeType.Admin)
                 {
-                    todos = await context.Todos.Include(e => e.Employee)
-                        .Where(y =>y.DepartmentId == DeptId).Skip(startFrom).Take(10).ToListAsync();
+                    todos = context.Todos.Include(e => e.Employee)
+                        .Where(y => y.DepartmentId == DeptId);
                 }
                 else
                 {
-                    todos = await context.Todos.Include(e => e.Employee)
-                        .Where(z => z.EmployeeId == userId).Skip(startFrom).Take(10).ToListAsync();
+                    todos = context.Todos.Include(e => e.Employee)
+                        .Where(z => z.EmployeeId == userId);
                 }
+                #region Apply Query for searching and counting
+                if (!pageDto.Search.IsNullOrEmpty())
+                {
+                    todos = todos.Where(e => e.Title.Contains(pageDto.Search)
+                    || e.Description.Contains(pageDto.Search));
+                }
+                int count = await todos.CountAsync();
+                #endregion
+
+                #region Filter Completed Task and Get Order
+                if (pageDto.IsCompleted != null)
+                {
+                    todos = todos.Where(x => pageDto.IsCompleted == true ? x.IsCompleted == true : x.IsCompleted == false);
+                }
+                todos = pageDto.OrderBy.IsNullOrEmpty() ? todos : GetOrder(todos, pageDto.OrderBy, pageDto.Orders == OrdersType.Asc);
+                #endregion
+
+                #region Checking Page Validation
+                if (pageDto.IsPagination)
+                {
+                    var take = Convert.ToInt32(pageDto.Take != null ? pageDto.Take : 0);
+                    var index = Convert.ToInt32(pageDto.Index != null ? pageDto.Index : 0);
+                    todos = todos.Skip(take * index).Take(take);
+                }
+                List<Todo> todos1 =await todos.ToListAsync();
+                #endregion
                 var departments = await context.Departments.ToListAsync();
                 #endregion
 
@@ -292,7 +345,7 @@ namespace EmployeeAPI.Provider.Services
                     #region Inserting Data to Iterable Data
                     logger.LogInformation("Fetching Tasks...");
                     message.IterableData = new List<TodoFetchDto>();
-                    foreach (var todo in todos)
+                    foreach (var todo in todos1)
                     {
                         message.IterableData.Add(new TodoFetchDto()
                         {
@@ -310,6 +363,7 @@ namespace EmployeeAPI.Provider.Services
                     message.Status = "success";
                     message.Message = "Tasks fetched successfully";
                     message.StatusCode = 200;
+                    message.Count = count;
                     logger.LogInformation($"{message.Message} by This Id: {userId}");
                     #endregion
 
@@ -342,12 +396,30 @@ namespace EmployeeAPI.Provider.Services
             }
         }
         #endregion
-        public async Task<ResponseMsg> SetTodoCompleted(int todoId,  SetCompletedTodoDto todoDto)
+
+        #region Set Task Completed Method
+        public async Task<ResponseMsg> SetTodoCompleted(int todoId,  SetCompletedTodoDto todoDto, IEnumerable<Claim> claim)
         {
             ResponseMsg message = new ResponseMsg();
             try
             {
-                var todo = await context.Todos.FirstOrDefaultAsync(x => x.Id == todoId);
+                #region Claming Information
+                int userId = Convert.ToInt32(claim.First(e => e.Type == "Id").Value);
+                EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
+                int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
+                #endregion
+
+                if (empType != EmployeeType.User)
+                {
+                    #region This API for user
+                    message.Status = "failed";
+                    message.Message = "You dont have the permission to Update Task completion, The API only for user";
+                    message.StatusCode = 401;
+                    logger.LogWarning($"{message.Message}");
+                    #endregion
+                }
+
+                var todo = await context.Todos.FirstOrDefaultAsync(x => x.Id == todoId && x.EmployeeId == userId);
                 if (todo != null)
                 {
                     todo.IsCompleted = todoDto.IsCompleted;
@@ -380,5 +452,6 @@ namespace EmployeeAPI.Provider.Services
                 return message;
             }
         }
+        #endregion
     }
 }
