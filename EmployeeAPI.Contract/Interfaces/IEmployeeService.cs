@@ -29,7 +29,7 @@ namespace EmployeeAPI.Contract.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ResponseWithObjectMessage - Return a response with EmployeeFetchUpdateDto object</returns>
-        public Task<ResponseWithObjectMessage<EmployeeFetchUpdateDto>> CurrentUser(int id);
+        public Task<ResponseWithObjectMessage<EmployeeFetchNotificationDto>> CurrentUser(int id);
 
         /// <summary>
         /// This method is used for User Registration, Validating User Information and Email then Add to database.

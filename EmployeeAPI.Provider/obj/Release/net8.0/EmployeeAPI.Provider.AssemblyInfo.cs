@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EmployeeAPI.Provider")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d66c3af3704906c026c4ed3c2d045a2e2e8ff1fd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d9e2a008a7802a89c86b3f895a090a85975a9d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("EmployeeAPI.Provider")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EmployeeAPI.Provider")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

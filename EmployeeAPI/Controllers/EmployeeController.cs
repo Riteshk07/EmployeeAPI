@@ -104,7 +104,7 @@ namespace EmployeeAPI.Controllers
 
         [Authorize]
         [HttpGet("userDetails")]
-        public async Task<ActionResult<ResponseWithObjectMessage<EmployeeFetchUpdateDto>>> CurrentUserDetail()
+        public async Task<ActionResult<ResponseWithObjectMessage<EmployeeFetchNotificationDto>>> CurrentUserDetail()
         {
             logger.LogInformation("Request Recieved for fetching Employee...");
 
