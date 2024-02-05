@@ -14,5 +14,8 @@ namespace EmployeeAPI.Contract.Dtos.TodoDtos
         public string? EmployeeName { get; set; }
         public string? DepartmentName { get; set; }
         public EmployeeType? AssignBy { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public DateTime? DeadLine {  get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace EmployeeAPI.Contract.Interfaces
         /// Fetching all departments 
         /// </summary>
         /// <returns>ResponseWIthEterableMessage - Return a Response with List of Department (DepartmentFetchDto).</returns>
-        public Task<ResponseWIthEterableMessage<DepartmentFetchDto>> GetAllDepartment();
+        public Task<ResponseWIthEterableMessage<GroupByDepartmentDto>> GetAllDepartment();
 
         /// <summary>
         /// Get Department Details by its Id

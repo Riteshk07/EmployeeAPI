@@ -28,6 +28,8 @@ namespace EmployeeAPI.Contract.Models
 
         public int? DepartmentId { get; set; }
         public int AssignById { get; set; }
-
+        public DateTime? TaskCreatedDateTime { get; set; }
+        public DateTime? TaskUpdatedDateTime { get; set; }
+        public DateTime? DeadLine { get; set; }
     }
 }

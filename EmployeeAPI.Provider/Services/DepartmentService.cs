@@ -31,9 +31,15 @@ namespace EmployeeAPI.Provider.Services
             try
             {
                 logger.LogInformation("Adding Department...");
+                var depart = await context.Departments.FirstOrDefaultAsync(x => x.DepartmentName == dept.DepartmentName && x.IsActive);
+                if (depart != null)
+                {
+                    return "failed";
+                }
                 Department department = new Department() {
                     DepartmentName = dept.DepartmentName
                 };
+                department.DepartmentCreatedDateTime = DateTime.UtcNow;
                 await context.Departments.AddAsync(department);
                 context.SaveChanges();
                 logger.LogInformation("Department Added Successfully");
@@ -48,9 +54,9 @@ namespace EmployeeAPI.Provider.Services
         #endregion
 
         #region Get All Department Method 
-        public async Task<ResponseWIthEterableMessage<DepartmentFetchDto>> GetAllDepartment()
+        public async Task<ResponseWIthEterableMessage<GroupByDepartmentDto>> GetAllDepartment()
         {
-            ResponseWIthEterableMessage<DepartmentFetchDto> message = new ResponseWIthEterableMessage<DepartmentFetchDto>();
+            ResponseWIthEterableMessage<GroupByDepartmentDto> message = new ResponseWIthEterableMessage<GroupByDepartmentDto>();
             try
             {
                 #region Fetching All Departments 
@@ -58,14 +64,14 @@ namespace EmployeeAPI.Provider.Services
 
                 logger.LogInformation("Checking Employee Type...");
 
-                var departments = await context.Departments.Where(d => d.IsActive).Select(dept => new DepartmentFetchDto()
+                var dept = await context.Departments.Where(x => x.IsActive).Select(d => new GroupByDepartmentDto()
                 {
-                    Id = dept.Id,
-                    DepartmentName = dept.DepartmentName
+                    Id = d.Id,
+                    DepartmentName = d.DepartmentName,
+                    EmployeesCount = d.Employees.Count(x => x.IsActive)
                 }).ToListAsync();
 
-
-                message.IterableData = departments;
+                message.IterableData = dept;
                 message.Status = "success";
                 message.Message = "All Department fetched successfully";
                 logger.LogInformation($"{message.Message}");

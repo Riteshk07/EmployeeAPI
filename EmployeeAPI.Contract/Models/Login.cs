@@ -19,5 +19,6 @@ namespace EmployeeAPI.Contract.Models
 
         [ForeignKey(nameof(EmployeeID))]
         public Employee? Employee { get; set; }
+        public DateTime? LastLoginDateTime { get; set; }
     }
 }

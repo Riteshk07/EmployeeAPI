@@ -37,7 +37,7 @@ namespace EmployeeAPI.Provider.Services
         }
 
         
-        public async Task<ResponseMsg> ForgetPassword(string email)
+        public async Task<ResponseMsg> ForgetPassword(string email, string IpAddress)
         {
             ResponseMsg msg = new ResponseMsg();
             try
@@ -55,7 +55,7 @@ namespace EmployeeAPI.Provider.Services
                     }
                     #endregion
 
-                    var resp = await this.SendEmail(email,emp);
+                    var resp = await this.SendEmail(email,emp, IpAddress);
                     if(resp.StatusCode == 200)
                     {
                         logger.LogInformation("Successfull Checked");
@@ -92,7 +92,7 @@ namespace EmployeeAPI.Provider.Services
         /// <param name="toemail"></param>
         /// <param name="emp"></param>
         /// <returns>ResponseMsg</returns>
-        public async Task<ResponseMsg> SendEmail(string toemail, Employee emp)
+        public async Task<ResponseMsg> SendEmail(string toemail, Employee emp, string IpAddress)
         {
 
             ResponseMsg message = new ResponseMsg();
@@ -105,7 +105,7 @@ namespace EmployeeAPI.Provider.Services
             using var smtp = new SmtpClient();
             try
             {
-                string link = this.GenerateLink(emp);
+                string link = this.GenerateLink(emp, IpAddress);
                 email.Body = new TextPart(TextFormat.Html)
                 {
                     Text = $"<h2>Employee API</h2>\r\n    <p>Please click on this button for reset password</p>\r\n    <div style='align-items: center; align-content: center; justify-content: center;'>\r\n        <button style=\"padding: 17px 40px;\r\n        border-radius: 10px;\r\n        border: 0;\r\n        background-color: rgb(255, 56, 86);\r\n        letter-spacing: 1.5px;\r\n        font-size: 15px;\r\n        transition: all 0.3s ease;\r\n        box-shadow: rgb(201, 46, 70) 0px 10px 0px 0px;\r\n        color: white;\r\n        cursor: pointer;\"><a href='{link}'>Reset Password</a></button>\r\n    </div>"
@@ -138,9 +138,9 @@ namespace EmployeeAPI.Provider.Services
         /// </summary>
         /// <param name="emp"></param>
         /// <returns>string</returns>
-        public string GenerateLink(Employee emp)
+        public string GenerateLink(Employee emp, string IpAddress)
         {
-            string resp = loginService.GeneratingToken(emp);
+            string resp = loginService.GeneratingToken(emp,IpAddress);
             string link = "https://localhost:7219/api/reset/" + resp;
             return link;
         }

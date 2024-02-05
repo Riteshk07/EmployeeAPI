@@ -18,6 +18,7 @@ namespace EmployeeAPI.Contract.Models
         public ICollection<Employee> Employees { get; set; }
 
         public bool IsActive { get; set; } = true;
+        public DateTime? DepartmentCreatedDateTime { get; set; }
 
     }
 }

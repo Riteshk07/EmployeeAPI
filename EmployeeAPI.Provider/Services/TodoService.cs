@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,9 +90,11 @@ namespace EmployeeAPI.Provider.Services
                         todoAssignTaskMessage.Data.DepartmentId = todo.DepartmentId = empType == EmployeeType.Admin ? DeptId : (emp != null ? emp.DepartmentID: null);
                         todoAssignTaskMessage.Data.DepartmentName = emp != null ? emp.Department?.DepartmentName:null;
                         todoAssignTaskMessage.Data.EmployeeName = emp != null ? emp.Name : null;
-                        await context.Todos.AddAsync(todo);
+                        todoAssignTaskMessage.Data.CreatedDate = todo.TaskCreatedDateTime = DateTime.UtcNow;
+                        todoAssignTaskMessage.Data.DeadLine = todo.DeadLine = todoDto.DeadLine;
+                        context.Todos.Add(todo);
                         await context.SaveChangesAsync();
-
+                        
 
                         todoAssignTaskMessage.Message = "Task Assign Successfully";
                         todoAssignTaskMessage.Status = "success";
@@ -237,6 +240,8 @@ namespace EmployeeAPI.Provider.Services
                     todo.Title = todoDto.Title.IsNullOrEmpty()? todo.Title: todoDto.Title;
                     todo.Description = todoDto.Description.IsNullOrEmpty() ? todo.Description: todoDto.Description;
                     todo.IsCompleted = todoDto.IsCompleted;
+                    todo.TaskUpdatedDateTime = DateTime.UtcNow; 
+                    todo.DeadLine = todoDto.DeadLine;
                     if (emp != null)
                     {
                         todo.EmployeeId = emp?.Id;
@@ -290,6 +295,14 @@ namespace EmployeeAPI.Provider.Services
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
                 #endregion
 
+                var currUser = await context.Employees.FirstOrDefaultAsync(x => x.Id == userId);
+                if (currUser != null)
+                {
+                    currUser.RecentActiveDateTime = DateTime.UtcNow;
+                    context.Employees.Update(currUser);
+                    await context.SaveChangesAsync();
+                }
+
                 #region Apply Query for Specific user
                 logger.LogInformation("Checking User Information to Get All Task");
 
@@ -310,6 +323,8 @@ namespace EmployeeAPI.Provider.Services
                     todos = context.Todos.Include(e => e.Employee)
                         .Where(z => z.EmployeeId == userId);
                 }
+                #endregion
+
                 #region Apply Query for searching and counting
                 if (!pageDto.Search.IsNullOrEmpty())
                 {
@@ -334,10 +349,15 @@ namespace EmployeeAPI.Provider.Services
                     var index = Convert.ToInt32(pageDto.Index != null ? pageDto.Index : 0);
                     todos = todos.Skip(take * index).Take(take);
                 }
+                else
+                {
+                    todos = todos.Take(1000);
+                }
                 List<Todo> todos1 =await todos.ToListAsync();
                 #endregion
+
                 var departments = await context.Departments.ToListAsync();
-                #endregion
+                
 
 
                 if (todos != null)
@@ -357,7 +377,10 @@ namespace EmployeeAPI.Provider.Services
                             EmployeeName = todo.Employee?.Name,
                             DepartmentId = todo.DepartmentId,
                             DepartmentName = departments.Where(d => d.Id == todo.DepartmentId).FirstOrDefault()?.DepartmentName,
-                            AssignBy = todo.AssignBy
+                            AssignBy = todo.AssignBy,
+                            DeadLine = todo.DeadLine,
+                            CreatedDate = todo.TaskCreatedDateTime,
+                            UpdatedDate = todo.TaskUpdatedDateTime
                         });
                     }
                     message.Status = "success";
@@ -408,7 +431,12 @@ namespace EmployeeAPI.Provider.Services
                 EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
                 #endregion
-
+                var currUser = await context.Employees.FirstOrDefaultAsync(x => x.Id == userId);
+                if (currUser != null)
+                {
+                    currUser.RecentActiveDateTime = DateTime.UtcNow;
+                    context.Employees.Update(currUser);
+                }
                 if (empType != EmployeeType.User)
                 {
                     #region This API for user

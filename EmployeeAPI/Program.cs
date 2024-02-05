@@ -1,3 +1,4 @@
+using EmployeeAPI;
 using EmployeeAPI.Contract.Interfaces;
 using EmployeeAPI.Provider.Context;
 using EmployeeAPI.Provider.Services;
@@ -71,6 +72,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -118,6 +120,7 @@ builder.Services.AddSwaggerGen(opt =>
             new string[]{}
         }
     });
+    opt.OperationFilter<CustomHeaderSwaggerAttribute>();
 });
 
 var app = builder.Build();
@@ -126,6 +129,8 @@ app.UseCors(policy => policy.AllowAnyHeader()
                 .AllowAnyMethod()
                 .SetIsOriginAllowed(origin => true)
                 .AllowCredentials());
+
+
 app.Logger.LogInformation("Calling From Program.cs Class");
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

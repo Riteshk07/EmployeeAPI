@@ -20,7 +20,9 @@ namespace EmployeeAPI.Controllers
         [HttpPost("forgetpassword")]
         public async Task<ActionResult<ResponseMsg>> ForgetPassword([FromBody] string email)
         {
-            var resp = await emailService.ForgetPassword(email);
+            HttpContext.Items.TryGetValue("", out object? IPAddress);
+            string IpAddress = IPAddress != null ? (string)IPAddress : "IPAddress";
+            var resp = await emailService.ForgetPassword(email, IpAddress);
             if (resp.StatusCode == 200)
             {
                 Ok(resp);

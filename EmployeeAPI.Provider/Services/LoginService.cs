@@ -43,7 +43,7 @@ namespace EmployeeAPI.Provider.Services
         #endregion 
 
         #region Generating Token
-        public string GeneratingToken(Employee emp)
+        public string GeneratingToken(Employee emp, string IpAddress)
         {
             #region Defining Token Handler, Key, Credential and Claims
             logger.LogInformation("Generating Token...");
@@ -57,7 +57,8 @@ namespace EmployeeAPI.Provider.Services
                 new Claim("Id", emp.Id.ToString()),
                 new Claim("Name", emp.Name),
                 new Claim("Email", emp.Email),
-                new Claim("DeptId", emp.DepartmentID.ToString())
+                new Claim("DeptId", emp.DepartmentID.ToString()),
+                new Claim("IpAddress", IpAddress)
             };
             #endregion
 
@@ -77,7 +78,7 @@ namespace EmployeeAPI.Provider.Services
 
         // Method for User Login | Checking Information from database Generating token  
         #region User Login Method
-        public async Task<LoginResponseMessage> UserLogin(LoginDto loginDto)
+        public async Task<LoginResponseMessage> UserLogin(LoginDto loginDto, string IpAddress)
         {
             try
             {
@@ -88,6 +89,7 @@ namespace EmployeeAPI.Provider.Services
                 var emp = await context.Employees.FirstOrDefaultAsync(e => e.Email == loginDto.Email);
                 if(emp != null)
                 {
+                    emp.RecentActiveDateTime = DateTime.UtcNow;
                     if (!emp.IsActive) {
                         LoginResponseMessage loginMessageDto = new LoginResponseMessage()
                         {
@@ -104,6 +106,7 @@ namespace EmployeeAPI.Provider.Services
                 var LogDetails = await context.Logins.FirstOrDefaultAsync(em => em.Email == loginDto.Email);
                 if (LogDetails != null)
                 {
+                    LogDetails.LastLoginDateTime = DateTime.UtcNow;
                     #region Verifying password
                     if (!passwordHash.Verify(LogDetails.Password, loginDto.Password))
                     {
@@ -136,7 +139,7 @@ namespace EmployeeAPI.Provider.Services
                         employeeDto.EmployeeType = employee.EmployeeType;
                         employeeDto.City = employee.City;
                         employeeDto.Country = employee.Country;
-                        string token = this.GeneratingToken(employee);
+                        string token = this.GeneratingToken(employee,IpAddress);
 
                         LoginResponseMessage loginMessageDto = new LoginResponseMessage()
                         {
@@ -147,6 +150,7 @@ namespace EmployeeAPI.Provider.Services
                             Token= token
                         };
                         logger.LogInformation($"{employee.Name} Logged in Successfull with {employee.Id}");
+                        await context.SaveChangesAsync();
                         return loginMessageDto;
                         #endregion
                     }

@@ -23,14 +23,17 @@ namespace EmployeeAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseMessage>> UserLogin(LoginDto loginDto)
         {
-            var resp = await this.loginService.UserLogin(loginDto);
+            
+            HttpContext.Items.TryGetValue("", out object? IPAddress);
+            string IpAddress = IPAddress!= null? (string)IPAddress:"IPAddress";
+            var resp = await this.loginService.UserLogin(loginDto, IpAddress);
             if(resp.Status == "success")
             {
                 return Ok(resp);
             }
             else if(resp.Status == "failed")
             {
-                return Unauthorized();
+                return Unauthorized(resp);
             }else if(resp.Status == "notfound")
             {
                 return NotFound(resp);

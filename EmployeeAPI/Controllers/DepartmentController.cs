@@ -31,6 +31,10 @@ namespace EmployeeAPI.Controllers
             {
                 return Ok(new { Message = "Department add Sussessfully", StatusCode = StatusCodes.Status201Created });
             }
+            else if (res == "failed")
+            {
+                return BadRequest(new { Message = "Department Already Exist"});
+            }
             else
             {
                 return BadRequest(new { Message = "Error from server side" });
@@ -55,7 +59,7 @@ namespace EmployeeAPI.Controllers
         }
 
         [HttpGet("departments")]
-        public async Task<ActionResult<ResponseWIthEterableMessage<DepartmentFetchDto>>> GetAllDepartment()
+        public async Task<ActionResult<ResponseWIthEterableMessage<GroupByDepartmentDto>>> GetAllDepartment()
         {
             logger.LogInformation("Taking Information from claim");
             var responseMessage = await deptService.GetAllDepartment();
