@@ -38,10 +38,5 @@ namespace EmployeeAPI.Contract.Interfaces
         /// <returns>ResponseMsg</returns>
         public Task<ResponseMsg> DeleteDepartment(int id);
 
-        /// <summary>
-        /// Fetch all Group by departments details by and count of employee on percular department.
-        /// </summary>
-        /// <returns>ResponseWIthEterableMessage - Return Responese with List of GroupByDepartmentDto object.</returns>
-        public Task<ResponseWIthEterableMessage<GroupByDepartmentDto>> GroupByDepartment();
     }
 }

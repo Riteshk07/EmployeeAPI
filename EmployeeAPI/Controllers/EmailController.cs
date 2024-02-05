@@ -36,7 +36,7 @@ namespace EmployeeAPI.Controllers
                 Unauthorized(resp);
             }
 
-            return BadRequest(resp);
+            return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
 
         }
         [HttpPost("resetpassword/{token}")]
@@ -58,7 +58,7 @@ namespace EmployeeAPI.Controllers
                 Unauthorized(resp);
             }
             
-            return BadRequest(resp);
+            return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
         }
 
         [HttpGet("CheckEmail/{Email}")]
@@ -74,7 +74,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         } 
     }

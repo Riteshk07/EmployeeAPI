@@ -331,7 +331,7 @@ namespace EmployeeAPI.Provider.Services
                     todos = todos.Where(e => e.Title.Contains(pageDto.Search)
                     || e.Description.Contains(pageDto.Search));
                 }
-                int count = await todos.CountAsync();
+               
                 #endregion
 
                 #region Filter Completed Task and Get Order
@@ -339,6 +339,7 @@ namespace EmployeeAPI.Provider.Services
                 {
                     todos = todos.Where(x => pageDto.IsCompleted == true ? x.IsCompleted == true : x.IsCompleted == false);
                 }
+                int count = await todos.CountAsync();
                 todos = pageDto.OrderBy.IsNullOrEmpty() ? todos : GetOrder(todos, pageDto.OrderBy, pageDto.Orders == OrdersType.Asc);
                 #endregion
 

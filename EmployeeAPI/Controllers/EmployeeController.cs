@@ -66,7 +66,7 @@ namespace EmployeeAPI.Controllers
             else
             {
                 resMessage.StatusCode = StatusCodes.Status500InternalServerError;
-                return BadRequest(resMessage);
+                return new ObjectResult(resMessage) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
@@ -97,7 +97,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
