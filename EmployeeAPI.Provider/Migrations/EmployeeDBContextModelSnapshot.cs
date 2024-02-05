@@ -171,6 +171,39 @@ namespace EmployeeAPI.Provider.Migrations
                     b.ToTable("Logins");
                 });
 
+            modelBuilder.Entity("EmployeeAPI.Contract.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TodoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("TodoId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("EmployeeAPI.Contract.Models.Todo", b =>
                 {
                     b.Property<int>("Id")
@@ -238,6 +271,21 @@ namespace EmployeeAPI.Provider.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("EmployeeAPI.Contract.Models.Notification", b =>
+                {
+                    b.HasOne("EmployeeAPI.Contract.Models.Employee", "Employee")
+                        .WithMany("Notifications")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("EmployeeAPI.Contract.Models.Todo", "Todo")
+                        .WithMany("Notifications")
+                        .HasForeignKey("TodoId");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Todo");
+                });
+
             modelBuilder.Entity("EmployeeAPI.Contract.Models.Todo", b =>
                 {
                     b.HasOne("EmployeeAPI.Contract.Models.Employee", "Employee")
@@ -254,7 +302,14 @@ namespace EmployeeAPI.Provider.Migrations
 
             modelBuilder.Entity("EmployeeAPI.Contract.Models.Employee", b =>
                 {
+                    b.Navigation("Notifications");
+
                     b.Navigation("Todos");
+                });
+
+            modelBuilder.Entity("EmployeeAPI.Contract.Models.Todo", b =>
+                {
+                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

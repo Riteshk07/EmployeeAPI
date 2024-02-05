@@ -37,7 +37,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(new { Message = "Error from server side" });
+                return new ObjectResult(res) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
@@ -54,7 +54,7 @@ namespace EmployeeAPI.Controllers
             else
             {
                 responseMessage.StatusCode = StatusCodes.Status500InternalServerError;
-                return BadRequest(responseMessage);
+                return new ObjectResult(responseMessage) { StatusCode = (int)StatusCodes.Status500InternalServerError }; 
             }
         }
 
@@ -76,7 +76,7 @@ namespace EmployeeAPI.Controllers
             else
             {
                 responseMessage.StatusCode = StatusCodes.Status500InternalServerError;
-                return BadRequest(responseMessage);
+                return new ObjectResult(responseMessage) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
@@ -97,16 +97,9 @@ namespace EmployeeAPI.Controllers
             else
             {
                 responseMessage.StatusCode = StatusCodes.Status500InternalServerError;
-                return BadRequest(responseMessage);
+                return new ObjectResult(responseMessage) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
-        [Authorize(Roles ="SuperAdmin")]
-        [HttpGet("GroupByDepartment")]
-        public async Task<ActionResult<ResponseWIthEterableMessage<GroupByDepartmentDto>>> GroupByDepartment()
-        {
-            var resp = await deptService.GroupByDepartment();
-
-            return Ok(resp);
-        }
+        
     }
 }

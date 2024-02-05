@@ -27,9 +27,42 @@ namespace EmployeeAPI.Provider.Services
             this.logger = logger;
             this.encryptMessage = encryptMessage;
         }
-        public Task<ResponseMsg> DeleteMessage(int id)
+        public async Task<ResponseMsg> DeleteMessage(int id)
         {
-            throw new NotImplementedException();
+            ResponseMsg msg = new ResponseMsg();
+            try
+            {
+                logger.LogInformation($"getting message details by this message ID: {id}");
+                var message = await context.CommunityMessages.FirstOrDefaultAsync(x => x.Id == id);
+                if (message != null) {
+                    context.Remove(message);
+                    logger.LogInformation($"Deleting message by this message ID: {id}");
+
+                    await context.SaveChangesAsync();
+                    logger.LogInformation($"Deleted successfully by this message ID: {id}");
+
+                    msg.Status = "success";
+                    msg.StatusCode = 200;
+                    msg.Message = "Message deleted successfully";
+                    return msg;
+                }
+                else
+                {
+                    msg.Status = "failed";
+                    msg.StatusCode = 404;
+                    msg.Message = "Invalid id, Message not found";
+                    logger.LogWarning($"{msg.Message} by this message ID: {id}");
+
+                    return msg;
+                }
+            } catch (Exception Ex)
+            {
+                msg.Status = "servererr";
+                msg.StatusCode = 500;
+                msg.Message = "Error from server side";
+                logger.LogInformation($"{msg.Message} by this message ID: {id}");
+                return msg;
+            }
         }
 
         public async Task<ResponseWIthEterableMessage<MessageBoxDto>> DisplayMessage(IEnumerable<Claim> claim, int? RecieverId)

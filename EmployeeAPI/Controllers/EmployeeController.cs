@@ -66,7 +66,7 @@ namespace EmployeeAPI.Controllers
             else
             {
                 resMessage.StatusCode = StatusCodes.Status500InternalServerError;
-                return BadRequest(resMessage);
+                return new ObjectResult(resMessage) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
@@ -97,14 +97,14 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
 
 
         [Authorize]
         [HttpGet("userDetails")]
-        public async Task<ActionResult<ResponseWithObjectMessage<EmployeeFetchUpdateDto>>> CurrentUserDetail()
+        public async Task<ActionResult<ResponseWithObjectMessage<EmployeeFetchNotificationDto>>> CurrentUserDetail()
         {
             logger.LogInformation("Request Recieved for fetching Employee...");
 

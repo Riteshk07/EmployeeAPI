@@ -65,6 +65,7 @@ namespace EmployeeAPI.Provider.Services
                 int userId = Convert.ToInt32(claim.First(e => e.Type == "Id").Value);
                 EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
+                string empName = claim.First(e => e.Type == "Name").Value;
                 #endregion
                 Employee? emp = null;
                 if(todoDto.EmployeeId != null)
@@ -92,9 +93,21 @@ namespace EmployeeAPI.Provider.Services
                         todoAssignTaskMessage.Data.EmployeeName = emp != null ? emp.Name : null;
                         todoAssignTaskMessage.Data.CreatedDate = todo.TaskCreatedDateTime = DateTime.UtcNow;
                         todoAssignTaskMessage.Data.DeadLine = todo.DeadLine = todoDto.DeadLine;
-                        context.Todos.Add(todo);
-                        await context.SaveChangesAsync();
                         
+                        var savedTodo = context.Todos.Add(todo);
+                        await context.SaveChangesAsync();
+
+                        if(emp != null)
+                        {
+                            context.Notifications.Add(new Notification()
+                            {
+                                Message = $"New Task Assigned by {empName} ({empType})",
+                                IsSeen = false,
+                                EmployeeId = emp.Id,
+                                TodoId = savedTodo.Entity.Id
+                            });
+                            await context.SaveChangesAsync();
+                        }
 
                         todoAssignTaskMessage.Message = "Task Assign Successfully";
                         todoAssignTaskMessage.Status = "success";
@@ -204,11 +217,12 @@ namespace EmployeeAPI.Provider.Services
                 int userId = Convert.ToInt32(claim.First(e => e.Type == "Id").Value);
                 EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
+                string empName = claim.First(e => e.Type == "Name").Value;
                 #endregion
 
                 logger.LogInformation("Checking User Information for Updating Task");
                 var emp = await context.Employees.Include(d => d.Department)
-                        .FirstOrDefaultAsync(e => e.Id == todoDto.EmployeeId);
+                        .FirstOrDefaultAsync(e => e.Id == todoDto.EmployeeId && e.IsActive);
                 if (emp != null)
                 {
                     if (emp.EmployeeType == EmployeeType.SuperAdmin)
@@ -231,6 +245,7 @@ namespace EmployeeAPI.Provider.Services
                     logger.LogWarning($"{message.Message} by this Id: {userId}");
                     return message;
                 }
+                bool flag = todo.EmployeeId == null;
                 #endregion
 
                 #region Task Updating
@@ -253,6 +268,18 @@ namespace EmployeeAPI.Provider.Services
                     context.Todos.Update(todo); 
                     await context.SaveChangesAsync();
 
+                    if (emp != null)
+                    {
+                        string msg = flag ? "Assigned" : "Updated";
+                        context.Notifications.Add(new Notification()
+                        {
+                            Message = $"Task {msg} by {empName} ({empType.ToString()})",
+                            IsSeen = false,
+                            EmployeeId = emp.Id,
+                            TodoId = todoId
+                        });
+                        await context.SaveChangesAsync();
+                    }
                     message.Message = "Task Updated Successfully";
                     message.Status = "success";
                     logger.LogInformation($"{message.Message} by this Id: {userId}");
@@ -331,7 +358,7 @@ namespace EmployeeAPI.Provider.Services
                     todos = todos.Where(e => e.Title.Contains(pageDto.Search)
                     || e.Description.Contains(pageDto.Search));
                 }
-                int count = await todos.CountAsync();
+               
                 #endregion
 
                 #region Filter Completed Task and Get Order
@@ -339,6 +366,7 @@ namespace EmployeeAPI.Provider.Services
                 {
                     todos = todos.Where(x => pageDto.IsCompleted == true ? x.IsCompleted == true : x.IsCompleted == false);
                 }
+                int count = await todos.CountAsync();
                 todos = pageDto.OrderBy.IsNullOrEmpty() ? todos : GetOrder(todos, pageDto.OrderBy, pageDto.Orders == OrdersType.Asc);
                 #endregion
 
@@ -430,6 +458,7 @@ namespace EmployeeAPI.Provider.Services
                 int userId = Convert.ToInt32(claim.First(e => e.Type == "Id").Value);
                 EmployeeType empType = (EmployeeType)Enum.Parse(typeof(EmployeeType), claim.First(e => e.Type == "Role").Value);
                 int DeptId = Convert.ToInt32(claim.First(e => e.Type == "DeptId").Value);
+                string empName = claim.First(e => e.Type == "Name").Value;
                 #endregion
                 var currUser = await context.Employees.FirstOrDefaultAsync(x => x.Id == userId);
                 if (currUser != null)
@@ -451,6 +480,16 @@ namespace EmployeeAPI.Provider.Services
                 if (todo != null)
                 {
                     todo.IsCompleted = todoDto.IsCompleted;
+                    if (todo.IsCompleted == true)
+                    {
+                        context.Notifications.Add(new Notification()
+                        {
+                            Message = $"Task Completed! {empName} has been Completed a task",
+                            IsSeen = true,
+                            EmployeeId = todo.AssignById,
+                            TodoId = todo.Id
+                        });
+                    }
                     context.Todos.Update(todo);
                     await context.SaveChangesAsync();
                     message.Status = "success";

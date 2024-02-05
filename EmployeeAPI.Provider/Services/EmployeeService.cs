@@ -156,9 +156,9 @@ namespace EmployeeAPI.Provider.Services
 
         // this method is used for getting employee details
         #region Getiing Current User Method
-        public async Task<ResponseWithObjectMessage<EmployeeFetchUpdateDto>> CurrentUser(int id)
+        public async Task<ResponseWithObjectMessage<EmployeeFetchNotificationDto>> CurrentUser(int id)
         {
-            ResponseWithObjectMessage<EmployeeFetchUpdateDto> message = new ResponseWithObjectMessage<EmployeeFetchUpdateDto>();
+            ResponseWithObjectMessage<EmployeeFetchNotificationDto> message = new ResponseWithObjectMessage<EmployeeFetchNotificationDto>();
             try
             {
                 #region Server Validation and Fetching Data
@@ -167,7 +167,7 @@ namespace EmployeeAPI.Provider.Services
 
                 if (emp != null)
                 {
-                    message.Data = new EmployeeFetchUpdateDto();
+                    message.Data = new EmployeeFetchNotificationDto();
                     message.Data.Id = emp.Id;
                     message.Data.DepartmentID = emp.DepartmentID;
                     message.Data.Name = emp.Name;
@@ -180,7 +180,8 @@ namespace EmployeeAPI.Provider.Services
                     message.Data.DepartmentName = emp.Department!= null ? emp.Department.DepartmentName:"";
                     message.Data.CreatedAt = emp.UserCreatedDateTime;
                     message.Data.UpdatedAt = emp.UserUpdatedDateTime;
-
+                    var notifi = emp.Notifications;
+                    message.Data.NotificationCount = notifi != null ? notifi.Count(x => x.IsSeen == false): 0;
                     message.Status = "success";
                     message.Message = "User Fetched Successfully";
                     message.StatusCode = 200;

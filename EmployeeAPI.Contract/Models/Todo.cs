@@ -31,5 +31,6 @@ namespace EmployeeAPI.Contract.Models
         public DateTime? TaskCreatedDateTime { get; set; }
         public DateTime? TaskUpdatedDateTime { get; set; }
         public DateTime? DeadLine { get; set; }
+        public ICollection<Notification>? Notifications { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp){ StatusCode = (int) StatusCodes.Status500InternalServerError};
             }
         }
         [Authorize]
@@ -50,7 +50,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
 
         }
@@ -59,7 +59,17 @@ namespace EmployeeAPI.Controllers
         public async Task <ActionResult<ResponseMsg>> DeleteMessage(int Id)
         {
             var resp = await communityMessageService.DeleteMessage(Id);
-            return resp;
+            if(resp.StatusCode == 200)
+            {
+                return Ok(resp);
+            }else if (resp.StatusCode == 404)
+            {
+                return NotFound(resp);
+            }
+            else
+            {
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
+            }
         }
 
         [Authorize]
@@ -73,7 +83,7 @@ namespace EmployeeAPI.Controllers
             }
             else
             {
-                return BadRequest(resp);
+                return new ObjectResult(resp) { StatusCode = (int)StatusCodes.Status500InternalServerError };
             }
         }
     }

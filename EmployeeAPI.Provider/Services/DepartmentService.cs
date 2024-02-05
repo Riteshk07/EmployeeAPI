@@ -198,42 +198,6 @@ namespace EmployeeAPI.Provider.Services
         }
         #endregion
 
-        #region Group by Department Method 
-        public async Task<ResponseWIthEterableMessage<GroupByDepartmentDto>> GroupByDepartment()
-        {
-            ResponseWIthEterableMessage<GroupByDepartmentDto> message = new ResponseWIthEterableMessage<GroupByDepartmentDto>();
-            
-            try
-            {
-                #region Getting Group By department
-                var groupedEmployees = await context.Employees.GroupBy(e => e.DepartmentID)
-                    .Select(group => new GroupByDepartmentDto
-                    {
-                        Id = group.Key,
-                        DepartmentName = group.Count() > 0 ? group.First().Department.DepartmentName: "",
-                        EmployeesCount = group.ToList().Count()
-                    }).ToListAsync();
-
-                message.IterableData = groupedEmployees;
-                message.StatusCode = StatusCodes.Status200OK;
-                message.Status = "success";
-                message.Message = "Departments Counted Successfully";
-                #endregion
-
-                return message;
-            }catch( Exception ex )
-            {
-                #region Handling Exception
-                logger.LogError($"");
-                message.IterableData = null;
-                message.StatusCode = 500;
-                message.Status = "failed";
-                message.Message = "Error from server side";
-                #endregion
-
-                return message;
-            }
-        }
-        #endregion
+        
     }
 }

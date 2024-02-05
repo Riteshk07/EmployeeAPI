@@ -49,5 +49,6 @@ namespace EmployeeAPI.Contract.Models
         public DateTime? RecentActiveDateTime { get; set; }
         public DateTime? UserCreatedDateTime { get; set; }
         public DateTime? UserUpdatedDateTime { get; set; }
+        public ICollection<Notification>? Notifications { get; set; }
     }
 }
