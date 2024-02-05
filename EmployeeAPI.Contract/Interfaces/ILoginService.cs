@@ -17,7 +17,7 @@ namespace EmployeeAPI.Contract.Interfaces
         /// </summary>
         /// <param name="loginDto"></param>
         /// <returns>LoginResponseMessage - It will return a User details and Token.</returns>
-        public Task<LoginResponseMessage> UserLogin(LoginDto loginDto);
+        public Task<LoginResponseMessage> UserLogin(LoginDto loginDto, string IpAddress);
         /// <summary>
         /// This Method is used for Change Email
         /// </summary>
@@ -31,7 +31,7 @@ namespace EmployeeAPI.Contract.Interfaces
         /// </summary>
         /// <param name="emp"></param>
         /// <returns>string - Return a String token.</returns>
-        public string GeneratingToken(Employee emp);
+        public string GeneratingToken(Employee emp, string IpAddress);
 
         /// <summary>
         /// this method is used for Changing User Password

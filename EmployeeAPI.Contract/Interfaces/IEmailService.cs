@@ -14,7 +14,7 @@ namespace EmployeeAPI.Contract.Interfaces
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public Task<ResponseMsg> ForgetPassword(string email);
+        public Task<ResponseMsg> ForgetPassword(string email, string IpAddress);
 
         /// <summary>
         /// The method check the token and fetch user information and set login password

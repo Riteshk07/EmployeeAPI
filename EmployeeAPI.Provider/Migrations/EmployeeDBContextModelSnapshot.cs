@@ -51,6 +51,9 @@ namespace EmployeeAPI.Provider.Migrations
                     b.Property<int?>("RecieverId")
                         .HasColumnType("int");
 
+                    b.Property<string>("RecieverName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserType")
                         .HasColumnType("nvarchar(max)");
 
@@ -66,6 +69,9 @@ namespace EmployeeAPI.Provider.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DepartmentCreatedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
@@ -120,6 +126,15 @@ namespace EmployeeAPI.Provider.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("RecentActiveDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UserCreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UserUpdatedDateTime")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentID");
@@ -141,6 +156,9 @@ namespace EmployeeAPI.Provider.Migrations
 
                     b.Property<int>("EmployeeID")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastLoginDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -167,6 +185,9 @@ namespace EmployeeAPI.Provider.Migrations
                     b.Property<int>("AssignById")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeadLine")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
@@ -178,6 +199,12 @@ namespace EmployeeAPI.Provider.Migrations
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("TaskCreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TaskUpdatedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");

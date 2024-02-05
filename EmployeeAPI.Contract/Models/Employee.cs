@@ -46,6 +46,8 @@ namespace EmployeeAPI.Contract.Models
             = new List<Todo>();
 
         public bool IsActive { get; set; } = true; 
-
+        public DateTime? RecentActiveDateTime { get; set; }
+        public DateTime? UserCreatedDateTime { get; set; }
+        public DateTime? UserUpdatedDateTime { get; set; }
     }
 }

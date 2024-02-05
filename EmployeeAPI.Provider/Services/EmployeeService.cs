@@ -98,7 +98,9 @@ namespace EmployeeAPI.Provider.Services
                     Address = emp.Address,
                     EmployeeType = emp.EmployeeType,
                     City = emp.City,
-                    Country = emp.Country
+                    Country = emp.Country,
+                    CreatedAt = emp.UserCreatedDateTime,
+                    UpdatedAt = emp.UserUpdatedDateTime
                 });
                 int count = await query.CountAsync();
                 #region Checking Page Validation
@@ -107,6 +109,10 @@ namespace EmployeeAPI.Provider.Services
                     var take = Convert.ToInt32(pageDto.Take != null ? pageDto.Take : 0);
                     var index = Convert.ToInt32(pageDto.Index != null ? pageDto.Index : 0);
                     empFetch = empFetch.Skip(take*index).Take(take);
+                }
+                else
+                {
+                    empFetch = empFetch.Take(1000);
                 }
                 
                 #endregion
@@ -172,6 +178,8 @@ namespace EmployeeAPI.Provider.Services
                     message.Data.City = emp.City;
                     message.Data.Country = emp.Country;
                     message.Data.DepartmentName = emp.Department!= null ? emp.Department.DepartmentName:"";
+                    message.Data.CreatedAt = emp.UserCreatedDateTime;
+                    message.Data.UpdatedAt = emp.UserUpdatedDateTime;
 
                     message.Status = "success";
                     message.Message = "User Fetched Successfully";
@@ -212,6 +220,14 @@ namespace EmployeeAPI.Provider.Services
             ResponseMsg message = new ResponseMsg();
             try
             {
+                var Dept = await context.Departments.FirstOrDefaultAsync( d => d.Id == emp.DepartmentID && d.IsActive);
+                if(Dept== null)
+                {
+                    message.Status = "failed";
+                    message.StatusCode = 400;
+                    message.Message = "Invalid Departmet Id";
+                    return message;
+                }
                 #region Employee Validation and Registration
                 logger.LogInformation($"Validating Employee...");
                 if (!emp.Name.IsNullOrEmpty() && validService.ValidateEmail(emp.Email) && validService.ValidatePassword(emp.Password))
@@ -229,37 +245,35 @@ namespace EmployeeAPI.Provider.Services
                     logger.LogInformation($"Validated");
                     Employee obj = new Employee
                     {
-                        Name = emp.Name,
-                        Email = emp.Email,
-                        Address = emp.Address,
-                        City = emp.City,
-                        Country = emp.Country,
+                        Name = emp.Name.Trim(),
+                        Email = emp.Email.Trim().ToLower(),
+                        Address = emp.Address.Trim(),
+                        City = emp.City.Trim(),
+                        Country = emp.Country.Trim(),
                         DepartmentID = emp.DepartmentID,
                         EmployeeType = emp.EmployeeType,
-                        Phone = emp.Phone
+                        Phone = emp.Phone.Trim(),
+                        UserCreatedDateTime = DateTime.UtcNow
                     };
-                    var savedEmp =  await context.Employees.AddAsync(obj);
-                    
+                    var savedEmp =  context.Employees.Add(obj);
                     await context.SaveChangesAsync();
-                    
-                    await context.Employees.SingleAsync(em => em.Email == emp.Email);
+                    var employee = await context.Employees.FirstOrDefaultAsync(x => x.Email == emp.Email);
 
-
-                    logger.LogInformation($"Employees: {savedEmp.Entity.Name} Adding");
+                    logger.LogInformation($"Employees: {emp.Name} Adding");
 
                     Login login = new Login
                     {
                         Password = passwordHash.HashPassword(emp.Password),
-                        Email = emp.Email,
-                        EmployeeID = savedEmp.Entity.Id
+                        Email = emp.Email.Trim().ToLower(),
+                        EmployeeID = employee.Id
                     };
                     context.Logins.Add(login);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     message.Message = "User saved Successfully";
                     message.StatusCode = 201;
                     message.Status = "success";
-                    logger.LogInformation($"Employees: {savedEmp.Entity.Name} Saved in the database");
+                    logger.LogInformation($"Employees: {employee.Name} Saved in the database");
                     return message;
                 }
                 else
@@ -313,6 +327,7 @@ namespace EmployeeAPI.Provider.Services
                     logger.LogInformation($"User Id: {id}| Invalid Email");
                     return updateEmployeeMessage;
                 }
+                emp.Email = emp.Email.Trim().ToLower();
                 #endregion
 
                 #region Server Validation, Updation and Response
@@ -355,6 +370,7 @@ namespace EmployeeAPI.Provider.Services
                     user.EmployeeType = emp.EmployeeType;
                     user.Address = emp.Address;
                     user.DepartmentID = emp.DepartmentID;
+                    user.UserUpdatedDateTime = DateTime.UtcNow;
 
                     logger.LogInformation("Updating User from Employee database");
                     context.Employees.Update(user);
